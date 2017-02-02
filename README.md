@@ -10,7 +10,7 @@ Usually not parameterised so you'll need to dig in the code to make it somwhat u
 
 Again I don't recommend using any of this: This is just a backup for myself that happens to be public.
 
-## twitterage.py
+## twitterage
 **legacy Python**
 
 Twitter bot that tweets when there are upcoming events.
@@ -19,4 +19,4 @@ Managed by direct messaging the account from whitelisted accounts.
 ## monitor.sh
 **bash**
 
-Simple script to see if websites has changed.
+Simple script to see if websites have changed.
