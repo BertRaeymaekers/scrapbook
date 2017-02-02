@@ -6,7 +6,7 @@ Hacks I once wrote that might work.
 Hardly maintained.
 Attributes like *beautiful*, *pythonic*, ... don't apply to this code.
 Not documented (if you're lucky there are comments in the code that *might* help).
-Usually not parameterised so you'll need to dig in the code to make it somwhat useful.
+Usually not parameterised so you'll need to dig in the code to make it somewhat useful.
 
 Again I don't recommend using any of this: This is just a backup for myself that happens to be public.
 
