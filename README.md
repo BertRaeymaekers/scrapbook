@@ -10,7 +10,7 @@ Usually not parameterised so you'll need to dig in the code to make it somwhat u
 
 Again I don't recommend using any of this: This is just a backup for myself that happens to be public.
 
-## twiterage.py
+## twitterage.py
 **legacy Python**
 
 Twitter bot that tweets when there are upcoming events.
