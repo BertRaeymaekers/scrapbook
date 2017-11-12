@@ -18,6 +18,13 @@ sudo apt-get update
 # Installing Apache
 sudo apt-get install mongodb -y
 
-## Installing curl
-#sudo apt-get install curl -y
+# Installing netstat
+sudo apt-get install net-tools -y
+
+## For the course
+## Installing git
+#sudo apt-get install git -y
+#
+## Installing python3-venv
+#sudo apt-get install python3-venv -y
 
