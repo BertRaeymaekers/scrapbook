@@ -3,3 +3,6 @@
 # Ignoring python in M.
 vagrant/M/python-3.6.3
 vagrant/M/python-3.6.3/*
+
+# Ignore all tokens
+**/.token
