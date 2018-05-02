@@ -4,5 +4,18 @@
 vagrant/M/python-3.6.3
 vagrant/M/python-3.6.3/*
 
+# Ignoring some course environemnts
+vagrant/m034
+vagrant/m034/*
+vagrant/m103-vagrant-env
+vagrant/m103-vagrant-env/*
+vagrant/m201-performance
+vagrant/m201-performance/*
+vagrant/m310-vagrant-env
+vagrant/m310-vagrant-env/*
+
 # Ignore all tokens
 **/.token
+
+# Ignore d0
+vagrant/d0/Vagrantfile
