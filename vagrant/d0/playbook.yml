@@ -1,0 +1,15 @@
+---
+# This playbook will install the SUSM API server.
+
+- name: Update and upgrade all packages
+  hosts: susm-api
+  become: true
+  roles:
+    - latest
+
+- name: Install Python
+  hosts: susm-api
+  become: true
+  roles:
+    - python
+
