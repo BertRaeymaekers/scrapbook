@@ -13,3 +13,9 @@
   roles:
     - python
 
+- name: Install uWSGI with Ngix
+  hosts: susm-api
+  vars:
+    - wsgi_user: susmapi
+  roles:
+    - wsgi

@@ -1,0 +1,20 @@
+---
+- name: Install Ngix
+  apt:
+    name: nginx
+    state: present
+
+- name: Create the wsgi user
+  user:
+    name: "{{wsgi_user}}"
+    shell: /bin/bash
+
+- name: Create the virtualenv
+  become_user: "{{wsgi_user}}"
+  become: yes
+  command: python3 -m venv .venv
+
+- name: Install uWSGI
+  become_user: "{{wsgi_user}}"
+  become: yes
+  command: /bin/bash -c "source .venv/bin/activate && pip install uwsgi"
