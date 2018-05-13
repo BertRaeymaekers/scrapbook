@@ -1,19 +1,18 @@
 ---
 
-- name: Create susmapi app directory
-  become_user: "{{wsgi_user}}"
-  become: yes
-  file: path=susmapi state=directory
-
 - name: Put a test file in it
+  become: yes
+  become_user: "{{wsgi_user}}"
   copy:
     src: "../files/dummy_wsgi.py"
-    dest: "~{{wsgi_user}}/susmapi/wsgi.py"
+    dest: "~{{wsgi_user}}/wsgi.py"
     owner: "{{wsgi_user}}"
     group: "{{wsgi_user}}"
     mode: u=rwx,g=r,o=r
 
 - name: Put a uwsgi ini file in it
+  become: yes
+  become_user: "{{wsgi_user}}"
   copy:
     src: "../files/dummy_susmapi.ini"
     dest: "~{{wsgi_user}}/susmapi.ini"
@@ -22,6 +21,7 @@
     mode: u=rw,g=r,o=r
 
 - name: Put the /etc/init/susmapi.service
+  become: yes
   copy:
     src: "../files/susmapi.service"
     dest: "/lib/systemd/system/susmapi.service"
@@ -31,15 +31,17 @@
 # systemctl enable susmapi.service
 # systemctl start susmapi
 
-- name: Include in ngix
+- name: Include in nginx
+  become: yes
   copy:
-    src: "../files/susmapi.ngix"
+    src: "../files/susmapi.nginx"
     dest: "/etc/nginx/sites-available/susmapi"
     owner: www-data
     group: www-data
     mode: u=rw,g=r,o=r
 
 - name: Link to sites-enabled
+  become: yes
   file:
     src: /etc/nginx/sites-available/susmapi
     dest: /etc/nginx/sites-enabled/susmapi

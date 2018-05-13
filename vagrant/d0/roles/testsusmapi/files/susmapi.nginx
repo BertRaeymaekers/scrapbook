@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name dr0;
+    #server_name dr0;
 
     location / {
         include         uwsgi_params;

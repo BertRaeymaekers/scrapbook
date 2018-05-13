@@ -1,20 +1,28 @@
 ---
-- name: Install Ngix
+- name: Install Nginx
+  become: yes
   apt:
     name: nginx
     state: present
 
+- name: Install setfacl
+  become: yes
+  apt:
+    name: acl
+    state: present
+
 - name: Create the wsgi user
+  become: yes
   user:
     name: "{{wsgi_user}}"
     shell: /bin/bash
 
 - name: Create the virtualenv
-  become_user: "{{wsgi_user}}"
   become: yes
-  command: python3 -m venv .venv
+  become_user: "{{wsgi_user}}"
+  command: /bin/bash -c "cd; python3 -m venv .venv"
 
 - name: Install uWSGI
-  become_user: "{{wsgi_user}}"
   become: yes
-  command: /bin/bash -c "source .venv/bin/activate && pip install uwsgi"
+  become_user: "{{wsgi_user}}"
+  command: /bin/bash -c "cd; source .venv/bin/activate && pip install uwsgi"
