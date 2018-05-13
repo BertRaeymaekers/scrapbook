@@ -2,20 +2,27 @@
 # This playbook will install the SUSM API server.
 
 - name: Update and upgrade all packages
-  hosts: susm-api
+  hosts: susm-api,susm-api-test
   become: true
   roles:
     - latest
 
 - name: Install Python
-  hosts: susm-api
+  hosts: susm-api,susm-api-test
   become: true
   roles:
     - python
 
 - name: Install uWSGI with Ngix
-  hosts: susm-api
+  hosts: susm-api,susm-api-test
   vars:
     - wsgi_user: susmapi
   roles:
     - wsgi
+
+- name: Install a test wsgi application
+  hosts: susm-api-test
+  vars:
+    - wsgi_user: susmapi
+  roles:
+    - testsusmapi
