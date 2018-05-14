@@ -25,8 +25,8 @@
   copy:
     src: "../files/susmapi.service"
     dest: "/lib/systemd/system/susmapi.service"
-    owner: www-data
-    group: www-data
+    owner: "{{wsgi_user}}"
+    group: "{{wsgi_user}}"
     mode: u=rw,g=r,o=r
 # systemctl enable susmapi.service
 # systemctl start susmapi
@@ -47,3 +47,9 @@
     dest: /etc/nginx/sites-enabled/susmapi
     state: link
   notify: nginx reload
+
+- name: Remove the default nginx conf.
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
