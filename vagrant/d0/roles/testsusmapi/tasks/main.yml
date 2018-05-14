@@ -46,10 +46,20 @@
     src: /etc/nginx/sites-available/susmapi
     dest: /etc/nginx/sites-enabled/susmapi
     state: link
-  notify: nginx reload
 
 - name: Remove the default nginx conf.
   become: yes
   file:
     path: /etc/nginx/sites-enabled/default
     state: absent
+
+- name: Restart service api, in all cases
+    service:
+    name: susmapi
+    state: restarted
+
+- name: Restart service nginx, in all cases
+    service:
+    name: nginx
+    state: restarted
+
