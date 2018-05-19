@@ -4,7 +4,7 @@
   become: yes
   become_user: "{{wsgi_user}}"
   command: /bin/bash -c "cd; source .venv/bin/activate && pip install dnspython"
-  
+
 - name: Install pymongo
   become: yes
   become_user: "{{wsgi_user}}"
