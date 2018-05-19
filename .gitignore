@@ -30,3 +30,5 @@ vagrant/m310-vagrant-env/*
 # Ignore d0
 vagrant/d0/Vagrantfile
 vagrant/d0/*.retry
+# Generated wsgi.py file because it contains the connection string.
+vagrant/d0/roles/testsusmapi/files/wsgi.py

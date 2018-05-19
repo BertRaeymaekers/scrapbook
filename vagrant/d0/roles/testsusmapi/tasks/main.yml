@@ -1,10 +1,20 @@
 ---
 
+- name: Install dnspython (required by the way we use pymongo)
+  become: yes
+  become_user: "{{wsgi_user}}"
+  command: /bin/bash -c "cd; source .venv/bin/activate && pip install dnspython"
+  
+- name: Install pymongo
+  become: yes
+  become_user: "{{wsgi_user}}"
+  command: /bin/bash -c "cd; source .venv/bin/activate && pip install pymongo"
+
 - name: Put a test file in it
   become: yes
   become_user: "{{wsgi_user}}"
   copy:
-    src: "../files/dummy_wsgi.py"
+    src: "../files/wsgi.py"
     dest: "~{{wsgi_user}}/wsgi.py"
     owner: "{{wsgi_user}}"
     group: "{{wsgi_user}}"
