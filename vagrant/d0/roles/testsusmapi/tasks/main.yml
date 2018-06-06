@@ -1,14 +1,19 @@
 ---
 
-- name: Install dnspython (required by the way we use pymongo)
+- name: Copy requirements.txt
   become: yes
   become_user: "{{wsgi_user}}"
-  command: /bin/bash -c "cd; source .venv/bin/activate && pip install dnspython"
+  copy:
+    src: "../files/requirements.txt"
+    dest: "~{{wsgi_user}}/requirements.txt"
+    owner: "{{wsgi_user}}"
+    group: "{{wsgi_user}}"
+    mode: u=rwx
 
-- name: Install pymongo
+- name: Install python dependencies
   become: yes
   become_user: "{{wsgi_user}}"
-  command: /bin/bash -c "cd; source .venv/bin/activate && pip install pymongo"
+  command: /bin/bash -c "cd; source .venv/bin/activate && pip install -r requirements.txt"
 
 - name: Put a test file in it
   become: yes
@@ -64,12 +69,12 @@
     state: absent
 
 - name: Restart service api, in all cases
-    service:
+  service:
     name: susmapi
     state: restarted
 
 - name: Restart service nginx, in all cases
-    service:
+  service:
     name: nginx
     state: restarted
 

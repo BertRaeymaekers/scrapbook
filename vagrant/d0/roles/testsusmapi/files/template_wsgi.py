@@ -1,4 +1,3 @@
-import functools
 import json
 import logging
 import traceback
@@ -11,6 +10,8 @@ class MongoRequestProcessor:
     conn = None
     uid = None
     account = None
+    table_def_cache = {}
+
     def __init__(self, uid, account, connection_string):
         self.uid = uid
         self.account = account
@@ -24,17 +25,29 @@ class MongoRequestProcessor:
             self.conn = pymongo.MongoClient(self.connection_string)
         return self.conn
 
-    @functools.lru_cache(maxsize=100, typed=False)
     def get_table_definition(self, module, table):
+        logging.debug("get_table_definition(%s, %s)", module, table)
+        if module in self.table_def_cache:
+            if table in self.table_def_cache[module]:
+                logging.debug("get_table_definition from cache.")
+                # TODO: make it more robust against DDOS: max size, last used?
+                return self.table_def_cache[module][table]
+        else:
+            self.table_def_cache[module] = {}
         collection = self.get_mongo_client().suappconf.UiOrmObject
-        return collection.find_one({"module": module, "table": table})
+        result = collection.find_one({"module": module, "table": table})
+        self.table_def_cache[module][table] = result
+        logging.debug("get_table_definition: %s", result)
+        return result
 
     def do_fetch(self, module, table, primarykey):
         logging.debug("do_fetch(%s, %s, %s)", module, table, primarykey)
         if not isinstance(primarykey, list):
             primarykey = [primarykey]
         table_def = self.get_table_definition(module, table)
+        logging.debug("do_fetch table_def: %s" % table_def)
         collection = self.get_mongo_client()["0x%s" % self.account][table_def['collection']]
+        logging.debug("do_fetch collection: %s" % collection)
         pk_columns = table_def['pk_columns']
         search_params= {}
         for i in range(len(pk_columns)):
@@ -106,5 +119,4 @@ def application(environ, start_response):
     return return_message
 
 
-logging.basicConfig(filename='logs/susmapi.log',level=logging.DEBUG)
-
+logging.basicConfig(fomat="%(asctime)s %(levelname)s %(name)s %(message)s", filename='logs/susmapi.log',level=logging.DEBUG)
