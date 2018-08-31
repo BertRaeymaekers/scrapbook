@@ -35,7 +35,7 @@
     group: "{{wsgi_user}}"
     mode: u=rw,g=r,o=r
 
-- name: Put the /etc/init/susmapi.service
+- name: Put the /lib/systemd/system//susmapi.service
   become: yes
   copy:
     src: "../files/susmapi.service"
@@ -45,6 +45,15 @@
     mode: u=rw,g=r,o=r
 # systemctl enable susmapi.service
 # systemctl start susmapi
+
+- name: Put the /etc/init/susmapi.conf
+  become: yes
+  copy:
+    src: "../files/susmapi.conf"
+    dest: "/etc/init/susmapi.conf"
+    owner: "{{wsgi_user}}"
+    group: "{{wsgi_user}}"
+    mode: u=rw,g=r,o=r
 
 - name: Include in nginx
   become: yes
