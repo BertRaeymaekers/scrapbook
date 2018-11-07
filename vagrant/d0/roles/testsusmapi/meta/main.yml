@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: wsgi, wsgi_user: "{{susmapi_user}}" }

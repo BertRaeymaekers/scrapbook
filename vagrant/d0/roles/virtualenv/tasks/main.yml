@@ -1,0 +1,10 @@
+---
+- name: virtualenv user {{virtualenv_user}}
+  user:
+    name: "{{virtualenv_user}}"
+    group: "{{virtualenv_group|default(omit)}}"
+    shell: "{{virtualenv_shell|default(omit)}}"
+- name: virtualenv environment {{virtualenv_path}}
+  become: yes
+  become_user: "{{virtualenv_user}}"
+  command: "python{{python_major_version}} -m venv {{virtualenv_path}}"

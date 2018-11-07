@@ -1,6 +1,6 @@
 ---
-- name: Install setfacl
+- name: Install Nginx
   become: yes
   apt:
-    name: acl
+    name: [nginx]
     state: present

@@ -1,5 +1,6 @@
 ---
 - name: Update and upgrade apt packages
+  become: true
   when: ansible_os_family == "Debian"
   apt:
     upgrade: yes

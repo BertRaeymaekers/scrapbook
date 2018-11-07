@@ -2,7 +2,7 @@ Vagrant.configure("2") do |config|
 
   # Virtualbox
   config.vm.box = "debian/stretch64"
-  config.vm.hostname = 'dr0'
+  config.vm.hostname = 'dr0-vb'
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = false
