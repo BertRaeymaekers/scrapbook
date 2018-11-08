@@ -18,6 +18,11 @@ Vagrant.configure('2') do |config|
   # Using Ansible
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "playbook.yml"
+    ansible.group = {
+      "susm-api" => ["d0", "d0-vb"],
+      "DEV" => ["d0-vb"],
+      "PRO" => ["d0"]
+    }
   end
 
 end

@@ -1,6 +1,6 @@
 ---
-- name: This playbook will install the SUSM API server.
-  hosts: susm-api
+- name: Main playbook for everything (only testsusmapi for now).
+  hosts: all
   vars:
     wsgi_user: susmapi
   tasks:
@@ -12,3 +12,4 @@
     - name: Install a test wsgi application
       import_role:
         name: testsusmapi
+      when: ansible_hostname in groups['susm-api']
