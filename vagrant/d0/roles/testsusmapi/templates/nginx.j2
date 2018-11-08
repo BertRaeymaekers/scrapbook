@@ -1,6 +1,6 @@
 server {
-    listen 80;
-    server_name _;
+    listen {{http_server_port|default(80)}};
+    server_name {{http_server_name|default("_")}};
 
     location / {
         include         uwsgi_params;
