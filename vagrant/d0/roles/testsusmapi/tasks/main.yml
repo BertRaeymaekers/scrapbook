@@ -56,7 +56,7 @@
 #    group: "{{susmapi_group}}"
 #   mode: u=rw,g=r,o=r
 
-- name: Make {{susmapi_name}} available in nginx
+- name: Configure {{susmapi_name}} in nginx
   become: yes
   template:
     src: "nginx.j2"
