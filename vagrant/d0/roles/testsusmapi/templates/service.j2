@@ -1,0 +1,14 @@
+[Unit]
+Description=uWSGI {{susmapi_name}}
+After=syslog.target
+
+[Service]
+ExecStart={{susmapi_name}}/{{virtualenv_name}}/bin/uwsgi --uid {{susmapi_user}} --gid {{susmapi_group}} --ini ~{{susmapi_user}}/{{susmapi_name}}.ini
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

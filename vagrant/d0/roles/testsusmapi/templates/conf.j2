@@ -1,0 +1,13 @@
+description "uWSGI instance to serve {{susmapi_name}}"
+
+start on runlevel [2345]
+stop on runlevel [!2345]
+
+setuid {{susmapi_user}}
+setgid {{www_data_group}}
+
+script
+    cd ~{{susmapi_user}}
+    . {{virtualenv_name}}/bin/activate
+    uwsgi --ini {{susmapi_name}}.ini
+end script

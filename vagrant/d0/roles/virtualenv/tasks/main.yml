@@ -4,6 +4,7 @@
     name: "{{virtualenv_user}}"
     group: "{{virtualenv_group|default(omit)}}"
     shell: "{{virtualenv_shell|default(omit)}}"
+
 - name: virtualenv environment {{virtualenv_path}}
   become: yes
   become_user: "{{virtualenv_user}}"

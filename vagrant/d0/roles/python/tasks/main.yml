@@ -1,6 +1,16 @@
 ---
-- name: Install Python {{python_major_version}}
+- name: "Install Python major version: {{python_major_version}}"
   become: true
   apt:
     name: ['python{{python_major_version}}', 'python{{python_major_version}}-pip', 'python{{python_major_version}}-venv']
     state: present
+  when: python_major_version == 3
+
+- name: Install Python
+  become: true
+  apt:
+    name: ['python', 'python-pip', 'python-virtualenv']
+    state: present
+  when: python_major_version == "" or python_major_version == 2
+
+

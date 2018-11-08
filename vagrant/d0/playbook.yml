@@ -2,7 +2,7 @@
 - name: This playbook will install the SUSM API server.
   hosts: susm-api
   vars:
-    user: susmapi
+    wsgi_user: susmapi
   tasks:
     - name: Update and upgrade all packages.
       import_role:
@@ -10,7 +10,5 @@
       when: latest_packages is defined
 
     - name: Install a test wsgi application
-      vars:
-        - wsgi_user: "{{user}}"
       import_role:
         name: testsusmapi

@@ -1,2 +1,9 @@
 ---
-susmapi_user: susmapi
+virtualenv_name: venv
+
+www_data_user: www-data
+www_data_group: "{{www_data_user}}"
+wsgi_processes: 5
+susmapi_name: susmapi
+susmapi_user: "{{susmapi_name}}"
+susmapi_group: "{{susmapi_user}}"

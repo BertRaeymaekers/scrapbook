@@ -1,0 +1,9 @@
+---
+- name: This playbook tests the python role
+  hosts: all
+  tasks:
+    - name: Install python role
+      import_role:
+        name: python
+      when: install_python is defined
+

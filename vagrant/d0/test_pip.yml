@@ -1,0 +1,12 @@
+---
+- name: This playbook tests the pip role
+  hosts: all
+  vars:
+    virtualenv_user: testuser
+    virtualenv_name: testenv
+  tasks:
+    - name: Install pip role
+      import_role:
+        name: pip
+      when:
+        - install_python is defined

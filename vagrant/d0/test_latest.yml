@@ -1,0 +1,9 @@
+---
+- name: This playbook tests the latest role.
+  hosts: all
+  tasks:
+    - name: Update and upgrade all packages.
+      import_role:
+        name: latest
+      when: latest_packages is defined
+

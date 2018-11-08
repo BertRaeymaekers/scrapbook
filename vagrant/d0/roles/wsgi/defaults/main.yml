@@ -1,5 +1,5 @@
 ---
 wsgi_user: wsgi
-wsgi_group: wsgi
+wsgi_group: "{{wsgi_user}}"
 wsgi_user_comment: User for running uwsgi
 wsgi_user_shell: /bin/bash

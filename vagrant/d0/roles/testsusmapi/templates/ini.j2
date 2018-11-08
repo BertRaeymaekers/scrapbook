@@ -1,0 +1,13 @@
+[uwsgi]
+chdir = ~{{susmapi_user}}
+module = wsgi:application
+
+master = true
+processes = {{wsgi_processes}}
+
+socket = ~{{susmapi_user}}/{{susmapi_name}}.sock
+chown-socket = {{susmapi_user}}:{{www_data_group}}
+chmod-socket = 660
+vacuum = true
+
+die-on-term = true

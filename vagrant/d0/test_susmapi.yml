@@ -1,0 +1,10 @@
+---
+- name: This playbook tests the (test)susmapi role
+  hosts: all
+  vars:
+    virtualenv_user: testuser
+    virtualenv_name: testenv
+  tasks:
+    - name: Install (test)susmapi role
+      import_role:
+        name: testsusmapi

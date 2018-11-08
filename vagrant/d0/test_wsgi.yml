@@ -1,0 +1,11 @@
+---
+- name: This playbook tests the wsgi role
+  hosts: all
+  vars:
+    wsgi_user: testuser
+    virtualenv_name: testenv
+    python_major_version: ""
+  tasks:
+    - name: Install wsgi role
+      import_role:
+        name: wsgi

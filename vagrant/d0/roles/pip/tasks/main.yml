@@ -1,10 +1,5 @@
 ---
-- debug:
-    msg: "Using virtualenv {{virtualenv_path}}."
-- debug:
-    msg: "Upgrade pip & virtualenv? {{pip_use_latest}}"
-
-- name: Upgrading pip and virtualenv itself.
+- name: Making sure pip and virtualenv are the highest version in {{virtualenv_path}}
   become: yes
   become_user: "{{virtualenv_user}}"
   command: "source {{virtualenv_path}}/bin/activate && pip install --upgrade {{item}}"
@@ -13,20 +8,20 @@
     - virtualenv
   when: pip_use_latest
 
-- name: Installing packages {{pip_packages}}.
+- name: Installing packages {{pip_packages|default([])}} in {{virtualenv_path}}
   become: yes
   become_user: "{{virtualenv_user}}"
   command: "source {{virtualenv_path}}/bin/activate && pip install {{item}}"
   with_items: "{{pip_packages|default([])}}"
   when: pip_packages
 
-- name: Installing packages from {{pip_requirements}} file.
+- name: Installing packages from {{pip_requirements|default("None")}} file in {{virtualenv_path}}
   become: yes
   become_user: "{{virtualenv_user}}"
   command: "source {{virtualenv_path}}/bin/activate && pip install -r {{pip_requirements}}"
   when: pip_requirements is defined
 
-- name: Upgrading packages {{pip_packages|default([])}}.
+- name: Upgrading packages {{pip_packages|default([])}} in {{virtualenv_path}}
   become: yes
   become_user: "{{virtualenv_user}}"
   command: "source {{virtualenv_path}}/bin/activate && pip install --upgrade {{item}}"
@@ -35,7 +30,7 @@
     - pip_upgrade
     - pip_packages
 
-- name: Upgrading packages from {{pip_requirements}} file.
+- name: Upgrading packages from {{pip_requirements}} file in {{virtualenv_path}}
   become: yes
   become_user: "{{virtualenv_user}}"
   command: "source {{virtualenv_path}}/bin/activate && pip install --upgrade -r {{pip_requirements}}"

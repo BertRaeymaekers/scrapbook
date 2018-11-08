@@ -1,0 +1,12 @@
+---
+- name: This playbook tests the virtualenv role
+  hosts: all
+  vars:
+    virtualenv_user: testuser
+    virtualenv_name: testenv
+  tasks:
+    - name: Install virtualenv package
+      import_role:
+        name: virtualenv
+      when:
+        - install_python is defined

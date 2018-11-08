@@ -1,5 +1,5 @@
 ---
 # TODO: use the pip module.
 dependencies:
-  - { role: pip, virtualenv_user: "{{wsgi_user}}", pip.packages: [uwsgi] }
+  - { role: pip, virtualenv_user: "{{wsgi_user}}", pip_packages: [uwsgi] }
   - { role: nginx }
