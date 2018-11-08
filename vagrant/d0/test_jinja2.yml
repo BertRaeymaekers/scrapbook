@@ -1,0 +1,19 @@
+---
+- name: Test ninja2 template {{src}}
+  hosts: localhost
+  vars:
+    dest: /tmp/jinja2.generated
+  tasks:
+    - name: Test ninja2 template {{src}}
+      template:
+        src: "{{src}}"
+        dest: "{{dest}}"
+
+    - name: Get generated file {{dest}}
+      command:
+        cat {{dest}}
+      register: filecontent
+
+    - name: Print file content
+      debug:
+        msg: "{{filecontent.stdout_lines}}"
