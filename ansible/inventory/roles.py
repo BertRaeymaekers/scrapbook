@@ -48,6 +48,7 @@ if __name__ == "__main__":
         if sys.argv[1] == "--list":
             for role in data:
                 result[role] = {"hosts": [x[0] for x in data[role]], "vars": {}}
+            result['_meta'] = dict(hostvars=hosts)
         elif sys.argv[1] == "--host":
             result = hosts[sys.argv[2]]
         print(json.dumps(result, indent=4))
