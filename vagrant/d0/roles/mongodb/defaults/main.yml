@@ -1,0 +1,6 @@
+---
+mongodb_version: latest
+# TODO: must change, now for clarity root
+mongodb_user: root
+mongodb_group: "{{mongodb_user}}"
+tmp_mongodb_versions_file: /tmp/mongodb.versions

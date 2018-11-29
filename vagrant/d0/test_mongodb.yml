@@ -1,0 +1,9 @@
+---
+- name: This playbook tests the mongodb role
+  hosts: all
+  vars:
+    mongodb_version: latest
+  tasks:
+    - name: Install mongodb role
+      import_role:
+        name: mongodb

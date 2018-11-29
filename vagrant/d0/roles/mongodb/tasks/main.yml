@@ -1,0 +1,20 @@
+---
+- name: Check the latest mongodb version
+  become: true
+  become_user: "{{mongodb_user}}"
+  get_url:
+    url: https://www.mongodb.org/static/pgp/
+    dest: "{{tmp_mongodb_versions_file}}"
+  register: mongodb_version_list
+  when: mongodb_version == "latest"
+
+- debug:
+    msg: "{{mongodb_version_list}}"
+
+- name: Retrieve the content of {{tmp_mongodb_versions_file}}
+  become: true
+  become_user: "{{mongodb_user}}"
+  lineinfile:
+    path: "{{tmp_mongodb_versions_file}}"
+    regexp: '<td><a href="[^"]*">(server-[0-9]+[.][0-9]+.asc)</a></td>'
+  register: lines
