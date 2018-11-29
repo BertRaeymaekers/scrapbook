@@ -1,16 +1,30 @@
 #! /usr/bin/env python
 
+
 import collections
 import json
 import os.path
 import sys
 
 
+SOURCE = "/etc/ansible/roles"
+
+
+def recursive_set(config, key, value):
+    keys = key.split('.',1)
+    if len(keys) > 1:
+        if keys[0] not in config:
+            config[keys[0]] = {}
+        recursive_set(config[keys[0]], keys[1], value)
+    else:
+        config[keys[0]] = value
+
+
 def read_hosts(source=None):
     data = collections.defaultdict(list)
     hosts = collections.defaultdict(dict)
     if not source:
-        source = "/etc/ansible/roles"
+        source = SOURCE
     with open(source, "r") as source_handle:
         for line in source_handle:
             line = line.strip()
@@ -27,7 +41,7 @@ def read_hosts(source=None):
                 try:
                     (hostname, roles) = line.split(None, 1)
                 except ValueError:
-                    print("Error with line %s" % (line))
+                    logging.debug("Error with line %s", line)
             for role in roles.split(","):
                 role = role.strip()
                 data[role].append((hostname, options))
@@ -37,11 +51,20 @@ def read_hosts(source=None):
                 except ValueError:
                     key = option
                     value = True
-                hosts[hostname][key] = value
+                recursive_set(hosts[hostname], key, value)
     return (data, hosts)
 
+
 if __name__ == "__main__":
-    (data, hosts) = read_hosts()
+    try:
+        (data, hosts) = read_hosts()
+    except:
+        data = {}
+        hosts = {}
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    (local_data, local_hosts) = read_hosts(script_dir + "/roles")
+    data.update(local_data)
+    hosts.update(local_hosts)
 
     if len(sys.argv) > 1:
         result = {}
