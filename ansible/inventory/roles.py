@@ -62,7 +62,7 @@ if __name__ == "__main__":
         data = {}
         hosts = {}
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    (local_data, local_hosts) = read_hosts(script_dir + "/roles")
+    (local_data, local_hosts) = read_hosts(script_dir + "/../roles")
     data.update(local_data)
     hosts.update(local_hosts)
 
