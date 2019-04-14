@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
 
   ## Using my ssh key.
   #config.ssh.private_key_path = "~/.ssh/id_rsa"
+  config.ssh.guest_port = "2200"
 
   # Adding my key in the VM.
   config.vm.provision "shell" do |s|
@@ -32,7 +33,6 @@ Vagrant.configure("2") do |config|
   end
 
   # Port forwarding
-  config.vm.network :forwarded_port, guest: 22, host: 2200
   config.vm.network :forwarded_port, guest: 80, host: 8000
 
 end
