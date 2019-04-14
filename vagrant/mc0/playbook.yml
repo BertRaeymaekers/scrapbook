@@ -1,0 +1,33 @@
+- name: Run minecraft server
+  hosts: minecraft
+  tasks:
+    - name: Install dependencies
+      become: true
+      become_user: root
+      apt:
+        name: ['default-jdk', 'screen', 'wget']
+        state: present
+    - name: Make Minecraft directory
+      file:
+        path: ~/Minecraft
+        state: directory
+    - stat:
+        path: ~/Minecraft/minecraft_server.jar
+      register: jar
+    - name: Download
+      uri:
+        url: https://launcher.mojang.com/v1/objects/3737db93722a9e39eeada7c27e7aca28b144ffa7/server.jar
+        dest: ~/Minecraft/minecraft_server.jar
+      when: not jar.stat.exists
+    - name: Set eula
+      lineinfile:
+        dest: ~/eula.txt
+        line: "eula=true"
+        create: true
+    - name: Startup file
+      copy:
+        dest: ~/Minecraft/start-server.sh
+        src: start-server.sh
+        mode: 0700
+    - name: Start
+      command: ~/Minecraft/start-server.sh "MC0"
