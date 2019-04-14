@@ -12,3 +12,4 @@
     when: ansible_os_family == "Debian"
     command: apt-get clean
     become: yes
+    changed_when: false
