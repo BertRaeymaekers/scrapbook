@@ -1,0 +1,12 @@
+---
+- name: restart apache
+  become: yes
+  service:
+    name: apache2
+    state: restarted
+
+- name: restart xymon
+  become: yes
+  service:
+    name: xymon
+    state: restarted

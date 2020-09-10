@@ -1,0 +1,32 @@
+---
+- name: "Make sure we have the needed packages"
+  become: yes
+  apt:
+    pkg:
+    - xymon
+  notify: restart apache
+
+- name: 'Allow access to xymon webapp (apache >= 2.4)'
+  become: yes
+  replace:
+    path: /etc/apache2/conf-available/xymon.conf
+    regexp: '^(\s*)(Require local)\n(\s*</IfModule>)$'
+    replace: '\1\2\n\1Require ip {{ xymon_allow_from }}\n\3'
+  when: xymon_allow_from is defined
+  notify: restart apache
+
+- name: 'Allow access to xymon webapp (apache < 2.4)'
+  become: yes
+  replace:
+    path: /etc/apache2/conf-available/xymon.conf
+    regexp: '^(\s*)Allow from\s+.*$'
+    replace: '\1Allow from localhost ::1/128 {{ xymon_allow_from }}'
+  when: xymon_allow_from is defined
+  notify: restart apache
+
+- name: 'Configure xymon'
+  become: yes
+  template:
+    src: hosts.cfg.j2
+    dest: /etc/xymon/hosts.cfg
+  notify: restart xymon

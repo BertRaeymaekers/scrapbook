@@ -59,12 +59,17 @@ if __name__ == "__main__":
     try:
         (data, hosts) = read_hosts()
     except:
+        #print(file=sys.stderr, "No global roles found at %s." % (SOURCE))
         data = {}
         hosts = {}
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    (local_data, local_hosts) = read_hosts(script_dir + "/../roles")
-    data.update(local_data)
-    hosts.update(local_hosts)
+    #script_dir = os.path.dirname(os.path.realpath(__file__))
+    try:
+        (local_data, local_hosts) = read_hosts(os.path.expanduser("~/ansible.roles"))
+        data.update(local_data)
+        hosts.update(local_hosts)
+    except:
+        #print(file=sys.stderr, "No local user roles found at ~/ansible.roles.")
+        pass
 
     if len(sys.argv) > 1:
         result = {}

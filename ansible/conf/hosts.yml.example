@@ -1,0 +1,17 @@
+NETWORK:
+  192.168.0.1: router router.local
+
+SERVERS:
+  192.168.0.10: fileserver fileserver.local
+
+PERIFERALS:
+  192.168.0.20: printer printer.local
+
+USER_MACHINES:
+  192.168.0.30: pc-amy pc-amy.local
+
+MOBILE_DEVICES:
+  192.168.0.40: fairphone-beth fairphone-beth.local
+
+OTHER:
+  192.168.0.50: mars-rover mars-rover.local

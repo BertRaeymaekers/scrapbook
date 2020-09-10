@@ -1,0 +1,9 @@
+---
+- name: "Adding entries to /ect/hosts"
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    backup: "{{ keep_backups | default('no') }}"
+    regex: '^{{ item.key }} '
+    line: '{{ item.key }} {{ item.value }}'
+  loop: "{{ hosts_file|dict2items }}"

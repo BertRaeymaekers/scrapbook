@@ -1,0 +1,4 @@
+---
+- hosts: backup
+  tasks:
+    - include_role: backup-server

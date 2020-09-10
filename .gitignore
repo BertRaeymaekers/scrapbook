@@ -3,7 +3,15 @@
 ###########
 
 ansible/*.retry
-ansible/roles
+ansible/group_vars/*.yml
+ansible/host_vars/*.yml
+ansible/conf/*.yml
+
+##########
+# VSCODE #
+##########
+.vscode
+.vscond/*
 
 ###########
 # VAGRANT #

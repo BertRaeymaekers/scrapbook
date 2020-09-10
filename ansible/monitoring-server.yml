@@ -1,0 +1,10 @@
+---
+- name: Only install the monitoring part
+  hosts: monitoring
+
+  tasks:
+    - include_role:
+        name: hosts_file
+
+    - include_role:
+        name: monitoring-server

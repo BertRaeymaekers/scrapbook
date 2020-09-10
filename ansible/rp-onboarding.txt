@@ -1,0 +1,18 @@
+[ON RP] Make sure sshd is working automatically on the pi:
+    apt-get install ssh-server
+    systemctl status ssh
+    systemctl enable ssh
+    systemctl start ssh
+
+[ON RP] Change the hostname of the pi:
+    hostname <hostname>
+
+#[ON RP] Change the the debian verion to 'stable' in all files under /etc/apt/:
+#    sources.list: deb http://raspbian.raspberrypi.org/raspbian/ stable main contrib non-free rpi
+#    sources.list.d/raspi.list: deb http://archive.raspberrypi.org/debian/ stable main
+
+ssh-copy-id <hostname>.<domain>
+
+Update the inventory to include <hostname>.<domain>
+
+Run the apt-upgrade playbook.

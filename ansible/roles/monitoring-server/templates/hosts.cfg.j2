@@ -1,0 +1,23 @@
+# Master configuration file for Hobbit
+#
+# !!! This file is managed by the ansible role monitoring-server. !!!
+# !!! No manual edits !!!
+#
+# This file defines several things:
+#
+# 1) By adding hosts to this file, you define hosts that are monitored by Hobbit
+# 2) By adding "page", "subpage", "group" definitions, you define the layout
+#    of the Hobbit webpages, and how hosts are divided among the various webpages 
+#    that Hobbit generates.
+# 3) Several other definitions can be done for each host, see the bb-hosts(5)
+#    man-page.
+#
+# You need to define at least the Hobbit server itself here.
+
+{% for groupname, elements in monitoring.items() %}
+group {{ groupname }}
+{% for line in elements %}
+{{ line }}
+{% endfor %}
+
+{% endfor %}

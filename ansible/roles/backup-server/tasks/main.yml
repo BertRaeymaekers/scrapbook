@@ -1,0 +1,6 @@
+---
+- name: Making sure we have the needed packages
+  apt:
+    pkg:
+    - samba
+    - nfs
