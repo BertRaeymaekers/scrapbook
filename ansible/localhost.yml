@@ -2,4 +2,4 @@
 - hosts: localhost
   tasks:
     - include_role:
-        name: hosts_file
+        name: user-machine

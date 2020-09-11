@@ -3,6 +3,7 @@
   become: yes
   apt:
     pkg:
+    - acl
     - samba
     - smbclient
     - nfs-kernel-server

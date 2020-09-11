@@ -1,0 +1,27 @@
+---
+- name: Make sure there is a RSA host key for the backup user
+  become: yes
+  become_user: "{{ backup_user.name }}"
+  command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+  args:
+    creates: ~/.ssh/id_rsa
+  delegate_to: "{{ backup_server }}"
+
+- name: Fetch the RSA public key of the backup user
+  become: yes
+  become_user: "{{ backup_user.name }}"
+  fetch:
+    src: ~/.ssh/id_rsa.pub
+    dest: "/tmp/{{ backup_server }}.rsync.id_rsa.pub"
+    flat: yes
+  delegate_to: "{{ backup_server }}"
+
+- name: Push to all users
+  become: yes
+  authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('file', '/tmp/' + lookup('vars', 'backup_server') + '.rsync.id_rsa.pub') }}"
+  register: pushout
+  failed_when: false
+  loop: "{{ people | list }}"

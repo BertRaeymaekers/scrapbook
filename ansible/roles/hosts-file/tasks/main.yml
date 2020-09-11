@@ -6,4 +6,4 @@
     backup: "{{ keep_backups | default('no') }}"
     regex: '^{{ item.key }} '
     line: '{{ item.key }} {{ item.value }}'
-  loop: "{{ hosts_file|dict2items }}"
+  loop: "{{ hosts_file | dict2items }}"

@@ -2,7 +2,7 @@
 - hosts: backup
   tasks:
     - include_role:
-        name: hosts_file
+        name: hosts-file
 
     - include_role:
         name: backup-server

@@ -1,0 +1,16 @@
+---
+- name: "Make sure we have the needed packages"
+  become: yes
+  apt:
+    pkg:
+    - acl
+
+- name: Make sure the hosts file is up to date
+  include_role:                                                             
+    name: hosts-file
+  
+- name: Execute on the backup servers
+  include_tasks: backup-server.yml
+  loop: "{{ groups.backup | list }}"
+  loop_control:
+    loop_var: backup_server
