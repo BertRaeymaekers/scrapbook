@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 
 import collections
@@ -59,7 +59,7 @@ if __name__ == "__main__":
     try:
         (data, hosts) = read_hosts()
     except:
-        #print(file=sys.stderr, "No global roles found at %s." % (SOURCE))
+        print("No global roles found at %s." % (SOURCE), file=sys.stderr)
         data = {}
         hosts = {}
     #script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         data.update(local_data)
         hosts.update(local_hosts)
     except:
-        #print(file=sys.stderr, "No local user roles found at ~/ansible.roles.")
+        print("No local user roles found at ~/ansible.roles.", file=sys.stderr)
         pass
 
     if len(sys.argv) > 1:
