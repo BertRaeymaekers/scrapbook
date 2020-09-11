@@ -70,7 +70,10 @@ def get_hosts(filename=None):
 def filter(hostgroups, groups=None, hosts=None):
     if not groups and not hosts:
         return hostgroups
-    hosts = set(hosts)
+    if hosts:
+        hosts = set(hosts)
+    else:
+        hosts = set()
     result = {}
     for group, ips in hostgroups.items():
         if groups and group in groups:
@@ -88,6 +91,9 @@ def generate_group_vars_yml(hostgroups=None, path=None):
     template_path = SCRIPT_DIR + '/../conf/group_vars'
     if not hostgroups:
         hostgroups = get_hosts()
+    # Getting the default configuration items
+    defaults = config.copy()
+    del defaults['groups']
     # Finding all potential groups: from the config and from conf/group_vars
     try:
         groups = set(config['groups'].keys())
@@ -99,7 +105,7 @@ def generate_group_vars_yml(hostgroups=None, path=None):
         pass
     for group in groups:
         print("Processing group %s..." % (group))
-        group_vars = dict()
+        group_vars = defaults.copy()
         try:
             with open(template_path + '/%s.yml' % (group), 'r') as input:
                 group_vars = yaml.load(input)
@@ -111,6 +117,10 @@ def generate_group_vars_yml(hostgroups=None, path=None):
             group_vars.update(groupconfig)
             for ip,names in  filter(hostgroups, groups=groupconfig.get('hosts_file_groups', []), hosts=groupconfig.get('hosts_file_hosts', [])).items():
                 hosts_file[ip] = names
+            user_machines = []
+            for ip,names in filter(hostgroups, groups=['USER_MACHINES']).items():
+                user_machines.append(names.split()[-1])
+            group_vars['user_machines'] = user_machines
         group_vars['hosts_file'] = hosts_file
         try:
             os.makedirs(path)

@@ -1,0 +1,13 @@
+---
+- name: Making sure we have the user group
+  become: yes
+  group:
+    name: "{{ name }}"
+    gid: "{{ gid | default(uid) }}"
+
+- name: Making sure we have the user
+  become: yes
+  user:
+    name: "{{ name }}"
+    uid: "{{ uid }}"
+    group: "{{ group | default(name) }}"

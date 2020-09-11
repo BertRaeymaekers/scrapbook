@@ -1,0 +1,12 @@
+---
+- name: mount backup device
+  become: yes
+  mount:
+    path: "{{ backup_path }}"
+    state: mounted
+
+- name: restart nfs
+  become: yes
+  service:
+    name: nfs-server
+    state: restarted
