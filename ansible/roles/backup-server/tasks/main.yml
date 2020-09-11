@@ -8,13 +8,15 @@
     - nfs-kernel-server
 
 - name: Making sure we have the backup user
-  include_tasks: user.yml
+  include_role:
+    name: user
   vars:
     name: "{{ backup_user.name }}"
     uid: "{{ backup_user.uid }}"
 
 - name: Make sure we have all people user accounts
-  include_tasks: user.yml
+  include_role:
+    name: user
   vars:
     name: "{{ item.key }}"
     uid: "{{ item.value.uid }}"

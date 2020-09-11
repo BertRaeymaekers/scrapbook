@@ -3,11 +3,11 @@
   become: yes
   group:
     name: "{{ name }}"
-    gid: "{{ gid | default(uid) }}"
+    gid: "{{ gid }}"
 
 - name: Making sure we have the user
   become: yes
   user:
     name: "{{ name }}"
     uid: "{{ uid }}"
-    group: "{{ group | default(name) }}"
+    group: "{{ group }}"
