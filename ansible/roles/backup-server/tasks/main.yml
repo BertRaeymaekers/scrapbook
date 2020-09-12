@@ -14,6 +14,8 @@
   vars:
     name: "{{ backup_user.name }}"
     uid: "{{ backup_user.uid }}"
+    group: "{{ backup_user.group | default(backup_user.name) }}"
+    gid: "{{ backup_user.gid | default(backup_user.uid) }}"
 
 - name: Make sure we have all people user accounts
   include_role:
@@ -29,7 +31,7 @@
   file:
     path: "{{ backup_mountpoint }}"
     state: directory
-    mode: 0766
+    mode: 0750
 
 - name: Making sure the backup drive is mounted
   become: yes
@@ -56,6 +58,24 @@
     group: "{{ item }}"
     state: directory
     mode: 0750
+  loop: "{{ people | list }}"
+
+- name: Make sure there is a sync.sh for each user
+  become: yes
+  blockinfile:
+    path: "{{ nfs_export_path }}/{{ item }}/sync.sh"
+    create: yes
+    owner: "{{ backup_user.name }}"
+    group: "{{ backup_user.group | default(backup_user.name) }}"
+    mode: 0744
+    marker: "# {mark} ANSIBLE PLAYBOOK BACKUP-SERVER BLOCK"
+    insertbefore: BOF
+    block: |
+      #!/bin/bash
+
+      ps -ef | grep "{{ nfs_export_path }}/{{ item }}" | grep rsync | grep -v grep && echo "There is already an rsync running for {{ nfs_export_path }}/{{ item }}: exiting." && exit
+
+      # rsync commands for specific user machine
   loop: "{{ people | list }}"
 
 - name: Creating extra NFS export directories
