@@ -15,7 +15,7 @@ def load_config(filename):
         return yaml.load(yml)
 
 
-config = load_config(SCRIPT_DIR + '/../conf/generate.yml')
+config = load_config(SCRIPT_DIR + '/../conf/config.yml')
 
 
 def get_hosts_from_hosts_file(filename=None, ip_prefix=None):
@@ -93,6 +93,9 @@ def generate_group_vars_yml(hostgroups=None, path=None):
         hostgroups = get_hosts()
     # Getting the default configuration items
     defaults = config.copy()
+    # Rename groups to config
+    defaults = ['config'] = defaults['groups']
+    del defaults['groups']
     # Finding all potential groups: from the config and from conf/group_vars
     try:
         groups = set(config['groups'].keys())
