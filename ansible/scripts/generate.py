@@ -94,7 +94,8 @@ def generate_group_vars_yml(hostgroups=None, path=None):
         hostgroups = get_hosts()
     # Getting the default configuration items
     defaults = config.copy()
-    # Make a real copy of groups as config
+    # Rename groups as config because groups is a reserved name in Ansible.
+    # The deep copy is needed to avoid issues with the yml generation.
     defaults['config'] = copy.deepcopy(defaults['groups'])
     del defaults['groups']
     # Finding all potential groups: from the config and from conf/group_vars
