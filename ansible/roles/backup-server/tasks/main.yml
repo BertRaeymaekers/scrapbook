@@ -75,7 +75,7 @@
 
       ps -ef | grep "{{ nfs_export_path }}/{{ item }}" | grep rsync | grep -v grep && echo "There is already an rsync running for {{ nfs_export_path }}/{{ item }}: exiting." && exit
 
-      # rsync commands for specific user machine
+      # The sync commands for specific user machine are below this block.
   loop: "{{ people | list }}"
 
 - name: Creating extra NFS export directories
