@@ -93,7 +93,6 @@ def generate_group_vars_yml(hostgroups=None, path=None):
         hostgroups = get_hosts()
     # Getting the default configuration items
     defaults = config.copy()
-    del defaults['groups']
     # Finding all potential groups: from the config and from conf/group_vars
     try:
         groups = set(config['groups'].keys())
