@@ -2,7 +2,7 @@
 - name: Making sure we have the user group
   become: yes
   group:
-    name: "{{ name }}"
+    name: "{{ group }}"
     gid: "{{ gid }}"
 
 - name: Making sure we have the user
