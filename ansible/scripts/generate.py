@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 
+import copy
 import errno
 import os.path
 import yaml
@@ -93,8 +94,8 @@ def generate_group_vars_yml(hostgroups=None, path=None):
         hostgroups = get_hosts()
     # Getting the default configuration items
     defaults = config.copy()
-    # Rename groups to config
-    defaults = ['config'] = defaults['groups']
+    # Make a real copy of groups as config
+    defaults['config'] = copy.deepcopy(defaults['groups'])
     del defaults['groups']
     # Finding all potential groups: from the config and from conf/group_vars
     try:
