@@ -1,0 +1,17 @@
+###########
+# Servers #
+###########
+
+# s1: monitoring server (running Debian)
+s1.local  monitoring,ian	ansible_user=ansible
+
+# s2: backup server (running Debian)
+s2.local  backup,ian  ansible_user=ansible
+
+#####################
+# End user machines #
+#####################
+
+# PC of Amy, has wired and wireless network
+pc-amy  ian ansible_user=ansible alternative_hostname=w-pc-amy
+w-pc-amy    ian ansible_user=ansible alternative_hostname=pc-amy
