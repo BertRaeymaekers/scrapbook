@@ -1,0 +1,10 @@
+---
+- name: Add the backup server rsync public key to local rsync
+  become: yes
+  authorized_key:
+    user: "{{ sync_user }}"
+    state: present
+    key: "{{ lookup('file', '/tmp/' + lookup('vars', 'backup_server') + '.rsync.id_rsa.pub') }}"
+
+- name: 
+  include_tasks: backup-server.yml

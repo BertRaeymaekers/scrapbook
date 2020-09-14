@@ -1,0 +1,17 @@
+---
+- name: "Configuring the sync script per user on {{ backup_server }}"
+  include_tasks: sync.yml
+  vars:
+    hostname: "{{ inventory_hostname }}"
+  loop: "{{ people | list }}"
+  loop_control:
+    loop_var: user
+
+- name: "Configuring the sync script per user on {{ backup_server }} for the alternative hostname."
+  include_tasks: sync.yml
+  vars:
+    hostname: "{{ alternative_hostname }}"
+  loop: "{{ people | list }}"
+  loop_control:
+    loop_var: user
+  when: alternative_hostname is defined

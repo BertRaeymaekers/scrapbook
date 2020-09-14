@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Goes through all jpeg files in current directory, grabs date from each
+# and sorts them into subdirectories according to the date
+# Creates subdirectories corresponding to the dates as necessary.
+
+cd {{ nfs_export_path }}/{{ item }}/Pictures
+mkdir -p {{ nfs_export_path }}/{{ item }}/PicDate
+
+for fil in *.JPG
+do
+    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
+    if ! test -e "{{ nfs_export_path }}/{{ item }}/Pictures/$datepath"; then
+        mkdir -pv "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath"
+    fi
+    echo "Copy $fil"
+    ln "$fil" {{ nfs_export_path }}/{{ item }}/PicDate/$datepath/$fil
+done
+
+for fil in *.JPEG
+do
+    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
+    if ! test -e "{{ nfs_export_path }}/{{ item }}/Pictures/$datepath"; then
+        mkdir -pv "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath"
+    fi
+    echo "Copy $fil"
+    ln "$fil" {{ nfs_export_path }}/{{ item }}/PicDate/$datepath/$fil
+done
+
+for fil in *.jpg  # Also try *.JPG
+do
+    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
+    if ! test -e "{{ nfs_export_path }}/{{ item }}/Pictures/$datepath"; then
+        mkdir -pv "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath"
+    fi
+    echo "Copy $fil"
+    ln "$fil" {{ nfs_export_path }}/{{ item }}/PicDate/$datepath/$fil
+done
+
+for fil in *.jpeg  # Also try *.JPG
+do
+    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
+    if ! test -e "{{ nfs_export_path }}/{{ item }}/Pictures/$datepath"; then
+        mkdir -pv "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath"
+    fi
+    echo "Copy $fil"
+    ln "$fil" {{ nfs_export_path }}/{{ item }}/PicDate/$datepath/$fil
+done

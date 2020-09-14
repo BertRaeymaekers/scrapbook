@@ -6,11 +6,36 @@
     - acl
 
 - name: Make sure the hosts file is up to date
-  include_role:                                                             
+  include_role:
     name: hosts-file
-  
+
+- name: Make sure we have the sync user locally
+  include_role:
+    name: user
+  vars:
+    name: "{{ sync_user }}"
+    uid: "{{ sync_uid }}"
+    group: "{{ sync_group }}"
+    gid: "{{ sync_gid }}"
+
 - name: Execute on the backup servers
-  include_tasks: backup-server.yml
+  include_tasks: backup-server-unix.yml
+  loop: "{{ groups.backup | list }}"
+  loop_control:
+    loop_var: backup_server
+
+- name: Add rsync to all user groups
+  user:
+    name: "{{ sync_user }}"
+    append: yes
+    groups: 
+      - "{{ lookup('vars', 'people.{{ item }}.group', default=item) }}"
+  failed_when: false
+  register: syncingroups
+  loop: "{{ people | list }}"
+
+- name: Configuring the sync script per backup server and user
+  include_tasks: sync_each_backup_server.yml
   loop: "{{ groups.backup | list }}"
   loop_control:
     loop_var: backup_server

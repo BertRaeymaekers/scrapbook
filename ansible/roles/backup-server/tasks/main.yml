@@ -7,6 +7,7 @@
     - samba
     - smbclient
     - nfs-kernel-server
+    - imagemagick
 
 - name: Making sure we have the backup user
   include_role:
@@ -156,3 +157,13 @@
     regexp: "^{{ nfs_export_path }}/mirror"
     line: "{{ nfs_export_path }}/mirror {{ nfs_allow_from }}({{ nfs_options }})"
   notify: restart nfs
+
+- name: Make sure there is a JPEG organiser script
+  become: yes
+  template:
+    src: jpeg_organiser.sh.j2
+    dest: "{{ nfs_export_path }}/{{ item }}/jpeg_organiser.sh"
+    owner: "{{ backup_user.name }}"
+    group: "{{ lookup('vars', 'people.{{ item }}.group', default=item) }}"
+    mode: 0744
+  loop: "{{ people | list }}"

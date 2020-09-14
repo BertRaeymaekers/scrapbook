@@ -1,0 +1,19 @@
+---
+- name: "Make sure the subdirectories exist on the {{ backup_server }} for {{ user }}"
+  become: yes
+  file:
+    path: "{{ nfs_export_path }}/{{ user }}/{{ item }}"
+    state: directory
+    owner: "{{ sync_user }}"
+    group: "{{ lookup('vars', 'people.{{ user }}.group', default=user) }}"
+  loop: "{{ sync_directories_to_backup }}"
+  delegate_to: "{{ backup_server }}"
+
+- name: "The sync scripts on {{ backup_server }} sync commands for {{ user }} on {{ hostname }}"
+  become: yes
+  lineinfile:
+    path: "{{ nfs_export_path }}/{{ user }}/sync.sh"
+    regexp: 'rsync@{{ hostname }}:/home/{{ user }}/{{ item }}/'
+    line: 'rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --chown={{ sync_user }}:{{ lookup("vars", "people.{{ user }}.group", default=user) }} "rsync@{{ hostname }}:/home/{{ user }}/{{ item }}/*" "{{ nfs_export_path }}/{{ user }}/{{ item }}/"'
+  loop: "{{ sync_directories_to_backup }}"
+  delegate_to: "{{ backup_server }}"

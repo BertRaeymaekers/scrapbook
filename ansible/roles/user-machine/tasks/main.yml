@@ -1,4 +1,6 @@
 ---
 - name: Debian style operating system
   include_tasks: ian.yml
+  register: first_attempt
+  failed_when: false
   when: ('ian' in group_names) or (ansible_host == '127.0.0.1')

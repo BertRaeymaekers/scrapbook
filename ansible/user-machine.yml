@@ -1,0 +1,5 @@
+---
+- hosts: laptop,desktop
+  tasks:
+    - include_role:
+        name: user-machine
