@@ -1,36 +1,42 @@
 #!/bin/sh
 
-# Goes through all jpeg files in current directory, grabs date from each
-# and sorts them into subdirectories according to the date
-# Creates subdirectories corresponding to the dates as necessary.
+# DOES NOT HANDLE CONCURRENT RUNS !!!! #
+
+# Goes through all jpeg files in Pictures directory, grabs date from each
+# and prepends them with a date in PicDate.
+
+mkdir -p {{ nfs_export_path }}/{{ item }}/PicDate
+touch /home/{{ backup_user.name }}/{{ item }}.jpeg
 
 cd {{ nfs_export_path }}/{{ item }}/Pictures
-mkdir -p {{ nfs_export_path }}/{{ item }}/PicDate
+TS=$(date +%Y%m%d%H%M%S)
+find . -iname "*.jpeg" | sed s%./%% | sort > /tmp/{{ item }}.jpeg.$TS
+comm -13 /home/{{ backup_user.name }}/{{ item }}.jpeg /tmp/{{ item }}.jpeg.$TS > /tmp/{{ item }}.jpeg.$TS.13
+rm /tmp/{{ item }}.jpeg.$TS
+cd ../PicDate
 
-for fil in *.JPG
+while IFS= read -r fil;
 do
-    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
-    echo "Link $fil"
-    ln "$fil" "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath-$fil"
-done
+    datepath="$(identify -verbose "../Pictures/$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%-%g)"
+    bn=$(sha1sum "../Pictures/$fil" | cut -d" " -f1)
+    [ -z "$datepath" ] || ln "../Pictures/$fil" "$datepath-$bn.jpeg"
+done < /tmp/{{ item }}.jpeg.$TS.13
+sort /tmp/{{ item }}.jpeg.$TS.13 > /home/{{ backup_user.name }}/{{ item }}.jpeg
+rm /tmp/{{ item }}.jpeg.$TS.13
 
-for fil in *.JPEG
-do
-    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
-    echo "Link $fil"
-    ln "$fil" "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath-$fil"
-done
 
-for fil in *.jpg  # Also try *.JPG
-do
-    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
-    echo "Link $fil"
-    ln "$fil" "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath-$fil"
-done
+cd {{ nfs_export_path }}/{{ item }}/Pictures
+TS=$(date +%Y%m%d%H%M%S)
+find . -iname "*.jpg" | sed s%./%% | sort > /tmp/{{ item }}.jpg.$TS
+comm -13 /home/{{ backup_user.name }}/{{ item }}.jpg /tmp/{{ item }}.jpg.$TS > /tmp/{{ item }}.jpg.$TS.13
+rm /tmp/{{ item }}.jpg.$TS
+cd ../PicDate
 
-for fil in *.jpeg  # Also try *.JPG
+while IFS= read -r fil;
 do
-    datepath="$(identify -verbose "$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%/%g)"
-    echo "Link $fil"
-    ln "$fil" "{{ nfs_export_path }}/{{ item }}/PicDate/$datepath-$fil"
-done
+    datepath="$(identify -verbose "../Pictures/$fil" | grep DateTimeOri | awk '{print $2 }' | sed s%:%-%g)"
+    bn=$(sha1sum "../Pictures/$fil" | cut -d" " -f1)
+    [ -z "$datepath" ] || ln "../Pictures/$fil" "$datepath-$bn.jpg"
+done < /tmp/{{ item }}.jpg.$TS.13
+sort /tmp/{{ item }}.jpg.$TS.13 > /home/{{ backup_user.name }}/{{ item }}.jpg
+rm /tmp/{{ item }}.jpg.$TS.13
