@@ -6,13 +6,12 @@
 # and prepends them with a date in PicDate.
 
 mkdir -p {{ nfs_export_path }}/{{ item }}/PicDate
-touch /home/{{ backup_user.name }}/{{ item }}.jpeg
 
 cd {{ nfs_export_path }}/{{ item }}/Pictures
+touch /home/{{ backup_user.name }}/{{ item }}.jpeg
 TS=$(date +%Y%m%d%H%M%S)
 find . -iname "*.jpeg" | sed s%./%% | sort > /tmp/{{ item }}.jpeg.$TS
 comm -13 /home/{{ backup_user.name }}/{{ item }}.jpeg /tmp/{{ item }}.jpeg.$TS > /tmp/{{ item }}.jpeg.$TS.13
-rm /tmp/{{ item }}.jpeg.$TS
 cd ../PicDate
 
 while IFS= read -r fil;
@@ -21,15 +20,16 @@ do
     bn=$(sha1sum "../Pictures/$fil" | cut -d" " -f1)
     [ -z "$datepath" ] || ln "../Pictures/$fil" "$datepath-$bn.jpeg"
 done < /tmp/{{ item }}.jpeg.$TS.13
-sort /tmp/{{ item }}.jpeg.$TS.13 > /home/{{ backup_user.name }}/{{ item }}.jpeg
+sort /tmp/{{ item }}.jpeg.$TS > /home/{{ backup_user.name }}/{{ item }}.jpeg
+rm /tmp/{{ item }}.jpeg.$TS
 rm /tmp/{{ item }}.jpeg.$TS.13
 
 
 cd {{ nfs_export_path }}/{{ item }}/Pictures
+touch /home/{{ backup_user.name }}/{{ item }}.jpg
 TS=$(date +%Y%m%d%H%M%S)
 find . -iname "*.jpg" | sed s%./%% | sort > /tmp/{{ item }}.jpg.$TS
 comm -13 /home/{{ backup_user.name }}/{{ item }}.jpg /tmp/{{ item }}.jpg.$TS > /tmp/{{ item }}.jpg.$TS.13
-rm /tmp/{{ item }}.jpg.$TS
 cd ../PicDate
 
 while IFS= read -r fil;
@@ -38,5 +38,6 @@ do
     bn=$(sha1sum "../Pictures/$fil" | cut -d" " -f1)
     [ -z "$datepath" ] || ln "../Pictures/$fil" "$datepath-$bn.jpg"
 done < /tmp/{{ item }}.jpg.$TS.13
-sort /tmp/{{ item }}.jpg.$TS.13 > /home/{{ backup_user.name }}/{{ item }}.jpg
+sort /tmp/{{ item }}.jpg.$TS > /home/{{ backup_user.name }}/{{ item }}.jpg
+rm /tmp/{{ item }}.jpg.$TS
 rm /tmp/{{ item }}.jpg.$TS.13
