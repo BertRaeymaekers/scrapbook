@@ -164,6 +164,6 @@
     src: jpeg_organiser.sh.j2
     dest: "{{ nfs_export_path }}/{{ item }}/jpeg_organiser.sh"
     owner: "{{ backup_user.name }}"
-    group: "{{ lookup('vars', 'people.{{ item }}.group', default=item) }}"
+    group: "{{ backup_user.group | default(backup_user.name) }}"
     mode: 0744
   loop: "{{ people | list }}"
