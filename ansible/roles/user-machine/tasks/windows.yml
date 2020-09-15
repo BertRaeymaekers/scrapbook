@@ -1,0 +1,3 @@
+---
+- debug:
+    msg: "Configuring SAMBA is done in the backup_server role. Client machine is not managed by Ansible and rsync can't pull (for now)."

@@ -27,6 +27,8 @@
     gid: "{{ item.value.gid | default(item.value.uid) }}"
   loop: "{{ people | dict2items }}"
 
+# MOUNT EXTRNAL DRIVE
+
 - name: Making the mount point for the backup drive
   become: yes
   file:
@@ -43,6 +45,8 @@
     opts: defaults
     passno: 2
     state: mounted
+
+# FILESYSTEM ORGANISATION
 
 - name: Creating the root NFS export directory
   become: yes
@@ -132,6 +136,8 @@
     passno: 0
     state: mounted
 
+# NFS
+
 - name: Configuring the user NFS exports
   become: yes
   lineinfile:
@@ -167,3 +173,35 @@
     group: "{{ backup_user.group | default(backup_user.name) }}"
     mode: 0744
   loop: "{{ people | list }}"
+
+# SAMBA
+
+- name: "Make sure SAMBA has all the user config"
+  become: yes
+  blockinfile:
+    path: "/etc/samba/smb.conf"
+    marker: "# {mark} ANSIBLE PLAYBOOK USER {{ item }} BLOCK"
+    block: |
+      [{{ item }}]
+        comment = Share of {{ item }}
+        path = {{ nfs_export_path }}/{{ item }}
+        browseable = yes
+        writable = yes
+        valid user = {{ item }}
+  loop: "{{ people | list }}"
+  notify: restart samba
+
+- name: "Make sure SAMBA has all the extra shares"
+  become: yes
+  blockinfile:
+    path: "/etc/samba/smb.conf"
+    marker: "# {mark} ANSIBLE PLAYBOOK USER {{ item }} BLOCK"
+    block: |
+      [{{ item }}]
+        read only = yes
+        locking = no
+        comment = Share of {{ item }}
+        path = {{ nfs_export_path }}/{{ item }}
+        guest ok = yes
+  loop: "{{ nfs_extra_exports }}"
+  notify: restart samba

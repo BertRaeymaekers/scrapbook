@@ -10,3 +10,9 @@
   service:
     name: nfs-server
     state: restarted
+
+- name: restart samba
+  become: yes
+  service:
+    name: smbd
+    state: restarted
