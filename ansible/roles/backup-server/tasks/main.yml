@@ -164,6 +164,8 @@
     line: "{{ nfs_export_path }}/mirror {{ nfs_allow_from }}({{ nfs_options }})"
   notify: restart nfs
 
+# JPEG ORGANISER
+
 - name: Make sure there is a JPEG organiser script
   become: yes
   template:
@@ -174,7 +176,17 @@
     mode: 0744
   loop: "{{ people | list }}"
 
+# TODO: crontab
+
 # SAMBA
+
+- name: "Set the workgroup name"
+  become: yes
+  lineinfile:
+    path: "/etc/samba/smb.conf"
+    regexp: '^\s*workgroup\s*='
+    line: "   workgroup = {{ domain | upper }}"
+  notify: restart samba
 
 - name: "Make sure SAMBA has all the user config"
   become: yes
@@ -205,3 +217,39 @@
         guest ok = yes
   loop: "{{ nfs_extra_exports }}"
   notify: restart samba
+
+# TODO: create smbpasswd -a <user>
+# https://stackoverflow.com/questions/44762488/non-interactive-samba-user-creation-via-ansible
+
+# SMB TO WINDOWS MACHINES
+
+- name: "Make sure we have an smb credentials file with username"
+  become: yes
+  lineinfile:
+    path: "/home/{{ backup_user.name }}/.smbcredentials"
+    owner: "{{ backup_user.name }}"
+    group: "{{ backup_user.group | default(backup_user.name) }}"
+    mode: 0500
+    regexp: "^username="
+    line: "username={{ backup_user.name }}"
+
+- name: "Make sure we have an smb credentials file with password"
+  become: yes
+  lineinfile:
+    path: "/home/{{ backup_user.name }}/.smbcredentials"
+    owner: "{{ backup_user.name }}"
+    group: "{{ backup_user.group | default(backup_user.name) }}"
+    mode: 0500
+    regexp: "^password=(.*)$"
+    line: "password={{ backup_user_smb_password }}"
+  when: backup_user_smb_password is defined
+
+- name: "Make sure we have an smb credentials file with domain workgroup"
+  become: yes
+  lineinfile:
+    path: "/home/{{ backup_user.name }}/.smbcredentials"
+    owner: "{{ backup_user.name }}"
+    group: "{{ backup_user.group | default(backup_user.name) }}"
+    mode: 0500
+    regexp: "^workgroup=(.*)$"
+    line: "workgroup={{ domain }}"
