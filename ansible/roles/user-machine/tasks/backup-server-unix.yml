@@ -1,4 +1,21 @@
 ---
+- name: Make sure there is a RSA host key for the backup user
+  become: yes
+  become_user: "{{ sync_user }}"
+  command: ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -C "" -N ""
+  args:
+    creates: ~/.ssh/id_rsa
+  delegate_to: "{{ backup_server }}"
+
+- name: Fetch the RSA public key of the backup user
+  become: yes
+  become_user: "{{ sync_user }}"
+  fetch:
+    src: ~/.ssh/id_rsa.pub
+    dest: "/tmp/{{ backup_server }}.rsync.id_rsa.pub"
+    flat: yes
+  delegate_to: "{{ backup_server }}"
+
 - name: Add the backup server rsync public key to local rsync
   become: yes
   authorized_key:
@@ -6,5 +23,20 @@
     state: present
     key: "{{ lookup('file', '/tmp/' + lookup('vars', 'backup_server') + '.rsync.id_rsa.pub') }}"
 
-- name: 
-  include_tasks: backup-server.yml
+- name: "Configuring the sync script per user on {{ backup_server }}"
+  include_tasks: sync.yml
+  vars:
+    hostname: "{{ inventory_hostname }}"
+  loop: "{{ people | list }}"
+  loop_control:
+    loop_var: user
+
+- name: "Configuring the sync script per user on {{ backup_server }} for the alternative hostname."
+  include_tasks: sync.yml
+  vars:
+    hostname: "{{ alternative_hostname }}"
+  loop: "{{ people | list }}"
+  loop_control:
+    loop_var: user
+  when: alternative_hostname is defined
+

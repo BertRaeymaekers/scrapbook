@@ -1,0 +1,15 @@
+---
+- name: Schedule the backup from the backup server
+  become: yes
+  become_user: "{{ sync_user }}"
+  cron:
+    name: "Sync for user {{ item }}"
+    minute: "{{ 0 * 15 | int }}"
+    # REQUIRES ANSIBLE 2.8
+    # minute: "{{ ansible_loop.index0 * 15 | int }}"
+    job: "/export/{{ item }}/sync.sh >> /home/{{ sync_user }}/{{ item }}_sync.log 2>/dev/null"
+  loop: "{{ people | list }}"
+  # REQUIRES ANSIBLE 2.8
+  #loop_control:
+  #  extended: yes
+  delegate_to: "{{ backup_server }}"

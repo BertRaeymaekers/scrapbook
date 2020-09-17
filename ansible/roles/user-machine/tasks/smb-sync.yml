@@ -1,0 +1,26 @@
+---
+- name: "Make sure the subdirectories exist on the {{ backup_server }} for {{ user }}"
+  become: yes
+  file:
+    path: "{{ nfs_export_path }}/{{ user }}/{{ item }}"
+    state: directory
+    owner: "{{ sync_user }}"
+    group: "{{ lookup('vars', 'people.{{ user }}.group', default=user) }}"
+  loop: "{{ smb_sync_directories_to_backup }}"
+  delegate_to: "{{ backup_server }}"
+
+- name: "The SMB and sync for {{ user }} of {{ hostname }} in sync script on {{ backup_server }}"
+  become: yes
+  blockinfile:
+    path: "{{ nfs_export_path }}/{{ user }}/sync.sh"
+    marker: "# {mark} SMB MOUNT {{ hostname }} AND COPY FOR USER {{ user }} BLOCK"
+    block: |
+      mount /mnt/windows/{{ hostname }} 2>/dev/null
+      if [ $? -eq 0 ]
+      then
+      {% for item in smb_sync_directories_to_backup %}
+        rsync -avz --chown=rsync:rsync "/mnt/windows/{{ hostname }}/{{ user }}/{{ item }}/" "{{ nfs_export_path }}/{{ user }}/{{ item }}/"
+      {% endfor %}
+      fi
+      umount /mnt/windows/{{ hostname }} 2>/dev/null
+  delegate_to: "{{ backup_server }}"

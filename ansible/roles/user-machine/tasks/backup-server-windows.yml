@@ -1,0 +1,57 @@
+---
+- name: Make sure we have a mount point for the windows machine
+  become: yes
+  file:
+    path: "/mnt/windows/{{ windows_host }}"
+    owner: "{{ sync_user }}"
+    group: "{{ sync_group }}"
+    state: directory
+    mode: 0700
+  delegate_to: "{{ backup_server }}"
+
+- name: Make sure we have a mount point for the alternative hostname
+  become: yes
+  file:
+    path: "/mnt/windows/{{ alternative_hostname }}"
+    owner: "{{ sync_user }}"
+    group: "{{ sync_group }}"
+    state: directory
+    mode: 0700
+  when: alternative_hostname is defined
+  delegate_to: "{{ backup_server }}"
+
+- name: Mount entry on the backup server to the windows machine
+  become: yes
+  lineinfile:
+    path: "/etc/fstab"
+    regexp: "^//{{ windows_host }}/users "
+    line: "//{{ windows_host }}/users /mnt/windows/{{ windows_host }} cifs uid={{ sync_uid }},gid={{ sync_gid }},credentials=/home/{{ sync_user }}/.smbcredentials,iocharset=utf8,vers=3.0,noperm,noauto,ro,noexec,user 0 0"
+  delegate_to: "{{ backup_server }}"
+
+- name: Mount entry on the backup server to the alternative hostame
+  become: yes
+  lineinfile:
+    path: "/etc/fstab"
+    regexp: "^//{{ alternative_hostname }}/users "
+    line: "//{{ alternative_hostname }}/users /mnt/windows/{{ alternative_hostname }} cifs uid={{ sync_uid }},gid={{ sync_gid }},credentials=/home/{{ sync_user }}/.smbcredentials,iocharset=utf8,vers=3.0,noperm,noauto,ro,noexec,user 0 0"
+  when: alternative_hostname is defined
+  delegate_to: "{{ backup_server }}"
+
+- name: "Configuring the sync script per user on {{ backup_server }}"
+  include_tasks: smb-sync.yml
+  vars:
+    hostname: "{{ inventory_hostname }}"
+  loop: "{{ people | list }}"
+  loop_control:
+    loop_var: user
+  delegate_to: "{{ backup_server }}"
+
+- name: "Configuring the sync script per user on {{ backup_server }} for the alternative hostname."
+  include_tasks: smb-sync.yml
+  vars:
+    hostname: "{{ alternative_hostname }}"
+  loop: "{{ people | list }}"
+  loop_control:
+    loop_var: user
+  when: alternative_hostname is defined
+  delegate_to: "{{ backup_server }}"

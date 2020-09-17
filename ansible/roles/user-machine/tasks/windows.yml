@@ -1,3 +1,13 @@
 ---
 - debug:
-    msg: "Configuring SAMBA is done in the backup_server role. Client machine is not managed by Ansible and rsync can't pull (for now)."
+    msg: "(1) Create the rsync user on the windows machine {{ ansible_host }} (credentials: see backup server). (2) Make a share on the windows machine {{ ansible_host }}: share the C:/Users as users for user rsync."
+#      "(3) Give the rsync user recursive read rights on C:/users."
+
+- set_fact:
+    windows_host: "{{ ansible_host }}"
+
+- name: Execute on the backup servers
+  include_tasks: backup-server-windows.yml
+  loop: "{{ groups.backup | list }}"
+  loop_control:
+    loop_var: backup_server

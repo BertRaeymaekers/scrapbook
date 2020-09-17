@@ -5,6 +5,12 @@
   when: ('ian' in group_names) or (ansible_host == '127.0.0.1')
 
 - name: Windows style operating system
-  include_tasks: ian.yml
+  include_tasks: windows.yml
   failed_when: false
-  when: 'windows' in group_names
+  when: ('windows' in group_names)
+
+- name: 
+  include_tasks: schedule-sync-backup-server.yml
+  loop: "{{ groups.backup | list }}"
+  loop_control:
+    loop_var: backup_server
