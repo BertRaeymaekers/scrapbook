@@ -1,0 +1,6 @@
+---
+- hosts: laptop,desktop,&windows
+  gather_facts: false
+  tasks:
+    - include_role:
+        name: user-machine
