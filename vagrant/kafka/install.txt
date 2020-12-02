@@ -1,0 +1,62 @@
+
+sudo apt-get update && sudo apt-get install curl default-jdk
+
+curl "https://archive.apache.org/dist/kafka/2.6.0/kafka_2.12-2.6.0.tgz" -o kafka_2.12-2.6.0.tgz
+
+mkdir -p /soft
+cd /soft
+
+tar -xvzf /root/kafka_2.12-2.6.0.tgz
+
+# zookeeper host/
+vi /soft/kafka_2.12-2.6.0/config/server.properties
+
+
+ln -s kafka_2.12-2.6.0 kafka
+
+
+vi /etc/systemd/system/zookeeper.service
+"""
+[Unit]
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target
+
+[Service]
+Type=simple
+User=kafka
+ExecStart=/soft/kafka/bin/zookeeper-server-start.sh /soft/kafka/config/zookeeper.properties
+ExecStop=/soft/kafka/bin/zookeeper-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+
+"""
+[Unit]
+Requires=zookeeper.service
+After=zookeeper.service
+
+[Service]
+Type=simple
+User=kafka
+ExecStart=/bin/sh -c '/soft/kafka/bin/kafka-server-start.sh /soft/kafka/config/server.properties >> /soft/kafka/kafka.log 2>&1'
+ExecStop=/soft/kafka/bin/kafka-server-stop.sh
+Restart=on-abnormal
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+
+
+ln -s kafka_2.12-2.6.0 kafka
+
+kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+
+
+
+
+## TESTING
+# ./kafka-producer-perf-test.sh --topic test --num-records 1000 --print-metrics --record-size 1000 --throughput 100 ...

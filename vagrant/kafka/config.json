@@ -1,0 +1,22 @@
+{
+    "params": {
+        "domain": "kafka.local"
+    },
+    "hosts": {
+        "k0": {
+            "id": 1,
+            "hostname": "k0",
+            "ip": "10.0.7.10"
+        },
+        "k1": {
+            "id": 2,
+            "hostname": "k1",
+            "ip": "10.0.7.11"
+        },
+        "k2": {
+            "id": 3,
+            "hostname": "k2",
+            "ip": "10.0.7.12"
+        }
+    }
+}

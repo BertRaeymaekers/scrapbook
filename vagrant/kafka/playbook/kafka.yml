@@ -1,0 +1,6 @@
+---
+- name: Make sure we have a Kafka cluster
+  hosts: kafka
+  tasks:
+    - include_role: 
+        name: kafka

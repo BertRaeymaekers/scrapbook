@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   ## Using my ssh key.
   #config.ssh.private_key_path = "~/.ssh/id_rsa"
-  config.ssh.guest_port = "2201"
+  config.ssh.guest_port = "2222"
 
   # Adding my key in the VM.
   config.vm.provision "shell" do |s|

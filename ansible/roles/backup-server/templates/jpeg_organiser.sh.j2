@@ -2,6 +2,9 @@
 
 # DOES NOT HANDLE CONCURRENT RUNS !!!! #
 
+# Needs tweeking as it will detect itself and stop.
+# ps -ef | grep "{{ nfs_export_path }}/{{ item }}/jpeg_organiser.sh" >/dev/null 2>&1 && exit || echo "Starting jpeg organiser..."
+
 # Goes through all jpeg files in Pictures directory, grabs date from each
 # and prepends them with a date in PicDate.
 

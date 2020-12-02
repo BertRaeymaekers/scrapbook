@@ -1,0 +1,135 @@
+---
+- name: Make sure we have a kafka user
+  user:
+    name: kafka
+  become: yes
+
+- name: Make sure we have the required packages
+  apt:
+    name:
+      - default-jdk
+      - policykit-1
+      - net-tools
+    state: present
+    update_cache: yes
+  become: yes
+
+- debug:
+    msg: "{{ groups['kafka'] }}"
+
+- name: Make sure the hosts file is up to date
+  lineinfile:
+    path: /etc/hosts
+    regex: "^{{item.key }}\\s"
+    line: "{{ item.key }}  {{ item.value }}"
+  become: yes
+  with_dict: "{{ hosts }}"
+
+- name: Make sure we have a /soft directory
+  file:
+    path: /soft
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  become: yes
+
+# We do this check otherwise we'll download it each time.
+- name: Check if the correct version of Kafka is already installed
+  stat:
+    path: "/soft/kafka_{{ kafka_build }}-{{ kafka_version }}"
+  register: kafka_installed
+
+- debug:
+    msg: "Kafka version {{ kafka_version}}, build {{ kafka_build }} already installed."
+  when: kafka_installed.stat.exists != false
+
+- name: Install Kafka
+  unarchive:
+    src: "https://archive.apache.org/dist/kafka/{{ kafka_version }}/kafka_{{ kafka_build }}-{{ kafka_version }}.tgz"
+    dest: /soft/
+    remote_src: yes
+    owner: kafka
+    group: kafka
+  become: yes
+  when: kafka_installed.stat.exists == false
+  notify: 
+    - restart zookeeper
+    - restart kafka
+
+- name: Make sure the Kafka is properly configured
+  template:
+    src: server.properties.j2
+    dest: "/soft/kafka_{{ kafka_build }}-{{ kafka_version }}/config/server.properties"
+  become: yes
+  notify: 
+    - restart kafka
+
+- name: Make sure the Zookeeper is properly configured
+  template:
+    src: zookeeper.properties.j2
+    dest: "/soft/kafka_{{ kafka_build }}-{{ kafka_version }}/config/zookeeper.properties"
+  become: yes
+  notify: 
+    - restart zookeeper
+
+- name: Make sure the Zookeeper dataDir exists
+  file:
+    path: "{{ zookeeper.datadir }}"
+    state: directory
+    owner: kafka
+    group: kafka
+  become: yes
+  notify: 
+    - restart zookeeper
+    - restart kafka
+
+# NOT SURE ABOUT THIS. ON MACHINE RESTART THIS ALL DISAPPEARS.
+- name: Set myid
+  template:
+    src: myid.j2
+    dest: "{{ zookeeper.datadir }}/myid"
+    owner: kafka
+    group: kafka
+  become: yes
+  notify: 
+    - restart zookeeper
+    - restart kafka
+
+- name: Make sure we point to this version
+  file:
+    src: "/soft/kafka_{{ kafka_build }}-{{ kafka_version }}"
+    dest: "/soft/kafka"
+    state: link
+    owner: kafka
+    group: kafka
+  become: yes
+  notify: 
+    - restart zookeeper
+    - restart kafka
+
+- name: Make sure we have a zookeeper service
+  template:
+    src: zookeeper.service.j2
+    dest: /etc/systemd/system/zookeeper.service
+  become: yes
+  notify: 
+    - restart zookeeper
+
+- name: Make sure the zookeeper service is enabled
+  systemd:
+    name: zookeeper
+    enabled: yes
+   
+- name: Make sure we have a kafka service
+  template:
+    src: kafka.service.j2
+    dest: /etc/systemd/system/kafka.service
+  become: yes
+  notify: 
+    - restart kafka
+
+- name: Make sure the kafka service is enabled
+  systemd:
+    name: kafka
+    enabled: yes
