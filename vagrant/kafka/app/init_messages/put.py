@@ -4,7 +4,6 @@
 Putting 1000 messages on topic 'one'
 """
 
-
 import secrets
 
 import kafka

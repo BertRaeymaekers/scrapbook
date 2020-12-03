@@ -148,3 +148,12 @@
     enabled: yes
     state: started
   become: yes
+
+- name: Make sure the topics exist
+  include_tasks: topics.yml
+  run_once: true
+  loop:
+    - one
+    - two
+  loop_control:
+    loop_var: topic
