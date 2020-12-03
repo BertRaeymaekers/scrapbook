@@ -7,6 +7,7 @@ Type=simple
 User=kafka
 Group=kafka
 ExecStart=/bin/sh -c '/soft/kafka/bin/zookeeper-server-start.sh /soft/kafka/config/zookeeper.properties >> /soft/kafka/logs/zookeeper.log 2>&1'
+ExecStartPost=/usr/bin/timeout 30 sh -c 'while ! ss -H -t -l -n sport = :2181 | grep -q "^LISTEN.*:2181"; do sleep 1; done'
 ExecStop=/soft/kafka/bin/zookeeper-server-stop.sh
 TimeoutSec=30
 Restart=on-abnormal

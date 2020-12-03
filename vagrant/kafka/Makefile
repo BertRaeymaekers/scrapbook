@@ -1,5 +1,5 @@
 
-all: virtualenv init start configure
+all: virtualenv init start configure apps
 clean: stop destroy
 
 virtualenv:
@@ -19,3 +19,6 @@ stop:
 
 destroy:
 	bin/destroy.sh
+
+apps:
+	bin/init_apps.sh

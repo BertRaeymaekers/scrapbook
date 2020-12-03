@@ -96,6 +96,17 @@
     - restart zookeeper
     - restart kafka
 
+- name: Make sure the log directory exists
+  file:
+    path: "/soft/kafka/logs"
+    state: directory
+    owner: kafka
+    group: kafka
+  become: yes
+  notify: 
+    - restart zookeeper
+    - restart kafka
+
 # NOT SURE ABOUT THIS. ON MACHINE RESTART THIS ALL DISAPPEARS.
 - name: Set myid
   template:
@@ -120,6 +131,7 @@
   service:
     name: zookeeper
     enabled: yes
+    state: started
   become: yes
    
 - name: Make sure we have a kafka service
@@ -134,4 +146,5 @@
   service:
     name: kafka
     enabled: yes
+    state: started
   become: yes
