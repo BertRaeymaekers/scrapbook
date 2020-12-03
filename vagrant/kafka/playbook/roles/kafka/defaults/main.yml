@@ -7,3 +7,5 @@ zookeeper:
   datadir: "/soft/kafka/zookeeper"
 kafka_version: 2.6.0
 kafka_build: 2.12
+partitions: 1
+replications: 2

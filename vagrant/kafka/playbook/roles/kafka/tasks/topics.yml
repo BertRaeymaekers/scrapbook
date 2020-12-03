@@ -1,0 +1,8 @@
+---
+# SHOULD ONLY BE RUN ON ONE NODE!
+# LOOP OVER TOPICS FROM MAIN.YML
+- name: "Create topic {{ topic }}"
+  command: "bash -c 'echo {{ topic }}''"
+  #command: "/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic {{ topic }} --partitions {{ partitions }} --replication-factor {{ replications }}"
+  register: topic_creation
+  failed_when: topic.creation.rc !=0 and "Topic '{{ topic }}' already exists." not in topic_creation.stdout
