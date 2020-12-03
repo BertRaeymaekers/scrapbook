@@ -22,9 +22,9 @@ Twitter bot that tweets when there are upcoming events.
 Managed by direct messaging the account from whitelisted accounts.
 
 ## vagrant
-**virtual machines to try out stuff**
+**virtual/cloud machines to try out stuff**
 
-Playing with MongoDB, Kafka, ...
+Playing with MongoDB, ELK, Kafka, ...
 
 ## monitor.sh
 **bash**
