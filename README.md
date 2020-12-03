@@ -12,6 +12,7 @@ Again I don't recommend using any of this: This is just a backup for myself that
 
 ## ansible
 **ansible playbooks and related stuff**
+
 For managing my private network of Raspberry Pi's and end user machines.
 
 ## twitterage
@@ -19,6 +20,11 @@ For managing my private network of Raspberry Pi's and end user machines.
 
 Twitter bot that tweets when there are upcoming events.
 Managed by direct messaging the account from whitelisted accounts.
+
+## vagrant
+**virtual machines to try out stuff**
+
+Playing with MongoDB, Kafka, ...
 
 ## monitor.sh
 **bash**
