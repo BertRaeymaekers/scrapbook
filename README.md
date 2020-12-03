@@ -10,6 +10,10 @@ Usually not parameterised so you'll need to dig in the code to make it somewhat 
 
 Again I don't recommend using any of this: This is just a backup for myself that happens to be public.
 
+## ansible
+**ansible playbooks and related stuff**
+For managing my private network of Raspberry Pi's and end user machines.
+
 ## twitterage
 **legacy Python**
 
