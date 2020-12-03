@@ -1,7 +1,8 @@
 # Ansible scripts to maintain my own network
 
 - **apt-upgrade.yml** to keep all my Debian machines up to date.
-- **raspberrypi.yml** to configure all my 'servers' with the required roles.
+- **backup-server.yml** to configure my backup server (i.e. a Raspberry Pi)
+- **monitoring-server.yml** to setup my monitoring server (i.e. a Rasberry Pi)
 
 ## Pre-requisites
 
