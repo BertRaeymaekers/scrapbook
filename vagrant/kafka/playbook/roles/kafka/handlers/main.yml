@@ -4,9 +4,11 @@
     name: zookeeper
     state: restarted
     #enabled: yes
+  become: yes
 
 - name: restart kafka
   service:
     name: kafka
     state: restarted
     #enabled: yes
+  become: yes

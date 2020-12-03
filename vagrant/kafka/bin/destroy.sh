@@ -8,5 +8,5 @@ HOSTS=$(python ${DIR}/hosts.py)
 for HOST in $HOSTS
 do
     cd ${DIR}/../vagrant
-    vagrant destroy ${HOST}
+    vagrant destroy -f ${HOST}
 done

@@ -1,7 +1,8 @@
 
-all: venv init start configure
+all: virtualenv init start configure
+clean: stop destroy
 
-venv:
+virtualenv:
 	bin/venv.sh
 
 init:

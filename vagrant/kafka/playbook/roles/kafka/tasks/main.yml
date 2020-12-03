@@ -8,7 +8,7 @@
   apt:
     name:
       - default-jdk
-      - policykit-1
+      #- policykit-1
       - net-tools
     state: present
     update_cache: yes
@@ -73,6 +73,18 @@
   notify: 
     - restart zookeeper
 
+- name: Make sure we point to this version
+  file:
+    src: "/soft/kafka_{{ kafka_build }}-{{ kafka_version }}"
+    dest: "/soft/kafka"
+    state: link
+    owner: kafka
+    group: kafka
+  become: yes
+  notify: 
+    - restart zookeeper
+    - restart kafka
+
 - name: Make sure the Zookeeper dataDir exists
   file:
     path: "{{ zookeeper.datadir }}"
@@ -96,18 +108,6 @@
     - restart zookeeper
     - restart kafka
 
-- name: Make sure we point to this version
-  file:
-    src: "/soft/kafka_{{ kafka_build }}-{{ kafka_version }}"
-    dest: "/soft/kafka"
-    state: link
-    owner: kafka
-    group: kafka
-  become: yes
-  notify: 
-    - restart zookeeper
-    - restart kafka
-
 - name: Make sure we have a zookeeper service
   template:
     src: zookeeper.service.j2
@@ -117,9 +117,10 @@
     - restart zookeeper
 
 - name: Make sure the zookeeper service is enabled
-  systemd:
+  service:
     name: zookeeper
     enabled: yes
+  become: yes
    
 - name: Make sure we have a kafka service
   template:
@@ -130,6 +131,7 @@
     - restart kafka
 
 - name: Make sure the kafka service is enabled
-  systemd:
+  service:
     name: kafka
     enabled: yes
+  become: yes
