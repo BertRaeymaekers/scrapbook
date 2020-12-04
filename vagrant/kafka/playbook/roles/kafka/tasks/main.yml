@@ -159,6 +159,7 @@
     state: started
   become: yes
 
+# TOO QUICK, KAFKA NOT FULLY STARTED UP AT THIS TIME
 - name: Make sure the topics exist
   include_tasks: topics.yml
   run_once: true
