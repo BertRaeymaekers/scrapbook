@@ -1,5 +1,5 @@
 
-all: virtualenv init start configure apps
+all: virtualenv init start configure apps init_messages
 clean: stop destroy
 
 virtualenv:
@@ -22,3 +22,6 @@ destroy:
 
 apps:
 	bin/init_apps.sh
+
+init_messages:
+	app/init_messages/put.sh

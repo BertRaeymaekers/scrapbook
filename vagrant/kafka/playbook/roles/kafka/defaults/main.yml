@@ -2,10 +2,13 @@
 rack: "MAIN"
 domain: "kafka.local"
 fqdn: "{{ ansible_hostname }}.{{ domain }}"
-zookeeper:
-  hosts: "{{ kafka.hosts }}"
-  datadir: "/soft/kafka/zookeeper"
+
 kafka_version: 2.6.0
 kafka_build: 2.12
 partitions: 1
 replications: 2
+log_dir: /soft/kafka/kafka-logs
+
+zookeeper:
+  hosts: "{{ kafka.hosts }}"
+  datadir: "/soft/kafka/zookeeper"

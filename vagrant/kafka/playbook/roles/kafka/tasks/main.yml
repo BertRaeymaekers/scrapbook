@@ -85,6 +85,16 @@
     - restart zookeeper
     - restart kafka
 
+- name: Make sure the Kafka log directory exists
+  file:
+    path: "{{ log_dir }}"
+    state: directory
+    owner: kafka
+    group: kafka
+  become: yes
+  notify:
+    - restart kafka
+
 - name: Make sure the Zookeeper dataDir exists
   file:
     path: "{{ zookeeper.datadir }}"

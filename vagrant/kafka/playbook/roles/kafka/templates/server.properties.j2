@@ -15,9 +15,9 @@ transaction.state.log.replication.factor=1
 transaction.state.log.min.isr=1
 # Replications: everything kept twice, 2 partitions to start with
 default.replication.factor=2
-num.partitions=2
+num.partitions={{ partitions }}
 num.recovery.threads.per.data.dir=4
-min.insync.replicas=2
+min.insync.replicas={{ replications }}
 auto.leader.rebalance.enable=True
 leader.imbalance.check.interval.seconds=300
 leader.imbalance.per.broker.percentage=10
@@ -25,9 +25,9 @@ unclean.leader.election.enable=False
 # Topics
 auto.create.topics.enable=False
 delete.topic.enable=False
-# Logging
-log.dirs=/tmp/kafka-logs
-log.retention.hours=168
+# Messages retention: location, how long too keep, ...
+log.dirs={{ log_dir }}
+log.retention.hours=1
 log.segment.bytes=1073741824
 log.retention.check.interval.ms=300000
 # Zookeeper
