@@ -1,5 +1,5 @@
 
-all: virtualenv init start configure apps init_messages
+all: virtualenv init start configure apps
 clean: stop destroy
 
 virtualenv:

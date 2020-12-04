@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-for APP in 'init_messages'
+for APP in 'init_messages' 'plain'
 do
 
     if [ ! -f ${DIR}/../app/${APP}/venv/bin/activate ]; then
