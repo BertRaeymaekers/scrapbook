@@ -1,7 +1,7 @@
 ---
 - name: "Create topic {{ topic }}"
   # TEST # command: "bash -c 'echo Topic {{ topic }} already exists; ls /nonexisting'"
-  command: "/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic {{ topic }} --partitions {{ partitions }} --replication-factor {{ replications }}"
+  command: "/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic {{ topic }} --partitions {{ test_partitions }} --replication-factor {{ replications }}"
   register: topic_creation
   failed_when: (topic_creation.rc !=0) and ("already exists" not in topic_creation.stdout)
   changed_when: (topic_creation.rc ==0) and ("Created topic" in topic_creation.stdout)
