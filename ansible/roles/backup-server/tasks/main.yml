@@ -8,6 +8,7 @@
     - smbclient
     - nfs-kernel-server
     - imagemagick
+    - cifs-utils
 
 - name: Making sure we have the backup user
   include_role:
