@@ -74,6 +74,8 @@ class S2H():
             'date': listing['date'][:-1], # datetime.datetime.strptime(listing['date'], "%Y-%m-%dT%H:%M:%SZ"),
             'images': []
         }
+        if 'countryName' not in listing['location']:
+            listing['location']['countryName'] = "?"
         if listing['location']['countryName'] == 'België':
             result['location'] = listing['location']['cityName']
         else:
@@ -176,7 +178,7 @@ if __name__ == "__main__":
                     print(json.dumps(item, indent=4))
                     print()
                 else:
-                    print("\033[F%s: %s" % (item["id"], item["title"]))
+                    print("\033[F%s %s: %s (%s)" % (item['date'][:10], item["id"], item["title"], item['location']))
                 commands = commands[1:]
                 if not commands:
                     commands = input('--> ')

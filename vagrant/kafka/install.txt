@@ -1,8 +1,12 @@
 # Check and create the topic
 
 /soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --list
-/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic one --partitions 1 --replication-factor 2
+# You need as many (or more) partitions than you have consumers running!!
+/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic one --partitions 4 --replication-factor 2
 /soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic one
+
+/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic two --partitions 4 --replication-factor 2
+/soft/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --describe --topic two
 
 # Put messages in the topic, next:
 
@@ -15,4 +19,7 @@
 
 
 ## TESTING
+/soft/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic one --from-beginning &
+/soft/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic one
+
 # ./kafka-producer-perf-test.sh --topic test --num-records 1000 --print-metrics --record-size 1000 --throughput 100 ...

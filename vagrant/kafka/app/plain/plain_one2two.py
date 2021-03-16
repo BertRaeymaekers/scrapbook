@@ -46,3 +46,5 @@ if __name__ == "__main__":
         #                                     108.953   85.955
         put_get.put_message('two', transformed_msg)
         consumer.commit()
+
+# kafka.errors.KafkaTimeoutError
