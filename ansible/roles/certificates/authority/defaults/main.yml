@@ -1,0 +1,15 @@
+---
+# Properties for the CA itself
+certificate_authority_name: "{{ ansible_host }}"
+certificate_authority_path: "{{ '~/certificate-authority' | expanduser }}"
+certificate_authority_validity_period: 10950
+certificate_authority_CN: "{{ certificate_authority_name }}"
+certificate_authority_O: FOOBAR
+certificate_key_size: 4096
+
+# Properties for keys to sign
+certificate_validity_period: 10950
+certificate_crt: "{{ certificate_csr|dirname }}/{{ certificate_csr|basename|regex_replace('.csr','') }}.cer"
+certificate_ext: "{{ certificate_csr|basename|regex_replace('.csr','') }}.ext"
+certificate_ALT:
+  - "{{ certificate_CN }}"

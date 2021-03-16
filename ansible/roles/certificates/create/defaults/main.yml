@@ -1,0 +1,4 @@
+---
+certificate_renewal_period: 31
+certificate_key_size: 4096
+certificate_O: FOOBAR

@@ -1,0 +1,10 @@
+---
+- name: Create the extension file
+  template:
+    src: ext
+    dest: "{{ certificate_authority_path }}/ext/{{ certificate_ext }}"
+  when: certificate_csr is defined
+
+- name: Sign it
+  shell: "openssl x509 -req -in \"{{ certificate_authority_path }}/to-sign/{{ certificate_csr|basename }}\" -CA \"{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.cer\" -CAkey \"{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.key\" -passin \"pass:{{ certificate_authority_passphrase }}\" -CAcreateserial -out \"{{ certificate_authority_path }}/signed/{{ certificate_crt|basename }}\" -days {{ validity_period }} -sha256 -extfile \"{{ certificate_authority_path }}/ext/{{ certificate_ext }}\""
+  when: certificate_csr is defined

@@ -1,0 +1,54 @@
+---
+- name: Make sure the certificate authority path exists
+  file:
+    path: "{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}"
+    state: directory
+    mode: 0700
+  run_once: true
+
+- name: Make sure the to-sign path exists
+  file:
+    path: "{{ certificate_authority_path }}/to-sign"
+    state: directory
+    mode: 0700
+  run_once: true
+
+- name: Make sure the signed path exists
+  file:
+    path: "{{ certificate_authority_path }}/signed"
+    state: directory
+    mode: 0700
+  run_once: true
+
+- name: Make sure the extention path exists
+  file:
+    path: "{{ certificate_authority_path }}/ext"
+    state: directory
+    mode: 0700
+  run_once: true
+
+- name: See if we already have a ca private certificate
+  stat:
+    path: "{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.key"
+  register: ca_key_file
+  run_once: true
+  changed_when: false
+
+- name: Create the ca private certificate
+  shell: "openssl genrsa -des3 -out \"{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.key\" -passout \"pass:{{ certificate_authority_passphrase }}\" \"{{ certificate_key_size }}\""
+  run_once: true
+  when: not(ca_key_file.stat.exists is defined and ca_key_file.stat.exists)
+
+# TODO: check renewal
+
+- name: See if we already have a ca public certificate
+  stat:
+    path: "{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.cer"
+  register: ca_pem_file
+  run_once: true
+  changed_when: false
+
+- name: Create the ca public certificate
+  shell: "openssl req -x509 -new -nodes -key \"{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.key\" -passin \"pass:{{ certificate_authority_passphrase }}\" -sha256 -days \"{{ certificate_authority_validity_period }}\" -out \"{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.cer\"  -subj \"/CN={{ certificate_authority_CN }}/O={{ certificate_authority_O }}\""
+  run_once: true
+  when: not(ca_pem_file.stat.exists is defined and ca_pem_file.stat.exists)

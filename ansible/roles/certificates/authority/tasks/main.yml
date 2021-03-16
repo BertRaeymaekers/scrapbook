@@ -1,0 +1,29 @@
+---
+- name: Make sure the CA is set up
+  include_tasks: setup.yml
+
+- name: Copy the certificate signing request (CSR) file to the to-sign directory
+  when: certificate_csr is defined
+  copy:
+    src: "{{ certificate_csr }}"
+    dest: "{{ certificate_authority_path }}/to-sign/"
+    remote_src: yes
+
+- name: "Sign the certificate signing request (CSR)"
+  when: certificate_csr is defined
+  include_tasks: sign.yml
+
+- name: "Copy the CA public certificate next to the certificate signing request (CSR)"
+  when: certificate_csr is defined
+  copy:
+    src: "{{ certificate_authority_path }}/ca/{{ certificate_authority_name }}/ca.cer"
+    dest: "{{ certificate_csr|dirname }}"
+    remote_src: yes
+  run_once: true
+
+- name: "Copy the signed certificate next to the certificate signing request (CSR)"
+  when: certificate_csr is defined
+  copy:
+    src: "{{ certificate_authority_path }}/signed/{{ certificate_crt|basename }}"
+    dest: "{{ certificate_csr|dirname }}"
+    remote_src: yes

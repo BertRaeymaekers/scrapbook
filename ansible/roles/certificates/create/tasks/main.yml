@@ -1,0 +1,55 @@
+---
+- name: Make sure the directory for the certificate exists
+  file:
+    path: "{{ certificate_name | dirname }}"
+    state: directory
+    mode: '0700'
+
+- name: Check if we already have a key file
+  stat:
+    path: "{{ certificate_name }}.key"
+  register: ca_key_file
+  changed_when: false
+
+- name: Create key file (no passphrase)
+  shell: 'openssl genrsa -out "{{ certificate_name }}.key" "{{ certificate_key_size }}"'
+  when: certificate_passphrase is not defined and (state == "rekey" or (not(ca_key_file.stat.exists is defined and ca_key_file.stat.exists) and (state == "key" or state == "csr" or state == "recsr")))
+
+- name: Create key file (with passphrase)
+  shell: 'openssl genrsa -des3 -out "{{ certificate_name }}.key" -passout "pass:{{ certificate_passphrase }}" "{{ certificate_key_size }}"'
+  when: certificate_passphrase is defined and (state == "rekey" or (not(ca_key_file.stat.exists is defined and ca_key_file.stat.exists) and (state == "key" or state == "csr" or state == "recsr")))
+
+- name: Check if we already have a csr file
+  stat:
+    path: "{{ certificate_name }}.csr"
+  register: ca_csr_file
+  changed_when: false
+
+- name: Create csr file (no passphrase)
+  shell: 'openssl req -new -key "{{ certificate_name }}.key" -out "{{ certificate_name }}.csr" -subj "/CN={{ certificate_CN }}/O={{ certificate_O }}"'
+  when: certificate_passphrase is not defined and (state == "recsr" or (not(ca_csr_file.stat.exists is defined and ca_csr_file.stat.exists) and state == "csr"))
+
+- name: Create csr file (passphrase)
+  shell: 'openssl req -new -key "{{ certificate_name }}.key" -passin "pass:{{ certificate_passphrase }}" -out "{{ certificate_name }}.csr" -subj "/CN={{ certificate_CN }}/O={{ certificate_O }}"'
+  when: certificate_passphrase is defined and (state == "recsr" or (not(ca_csr_file.stat.exists is defined and ca_csr_file.stat.exists) and state == "csr"))
+
+- name: Initiate days_valid to 0
+  set_fact:
+    days_valid: 0
+
+- name: Check the expiration date of the certificate
+  shell: 'echo $((($(openssl x509 -noout -dates -in "{{ certificate_name }}.cer" | grep "notAfter" | cut -d= -f2 | xargs -I {} date --date "{}" +%s) - $(date +%s))/86400))'
+  register: days_output
+  changed_when: false
+  failed_when: false
+
+- name: Return the number of days
+  when: days_output.rc == 0
+  set_fact:
+    days_valid: "{{ [0, days_output.stdout] | map('int') | max }}"
+  failed_when: false
+
+- debug: 
+    msg: "Certificate is still {{ days_valid}} days valid."
+  changed_when: days_valid|int < certificate_renewal_period|int
+  register: renew_certificate

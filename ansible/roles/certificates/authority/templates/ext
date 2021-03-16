@@ -1,0 +1,11 @@
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName = @alt_names
+
+[alt_names]
+{% set nr = 1 %}
+{% for alt in certificate_ALT %}
+DNS.{{ nr }} = {{ alt }}
+{% set nr = nr + 1 %}
+{% endfor %}
