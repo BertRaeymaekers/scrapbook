@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     (ans, ans_depth) = ancestors(pedigree, center_bird)
     (des, des_depth) = descendents(pedigree, center_bird)
-    print(ans, ans_depth)
-    print(des, des_depth)
+    # print(ans, ans_depth)
+    # print(des, des_depth)
 
     draw(ans, ans_depth, center_bird, des, des_depth)
