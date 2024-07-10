@@ -7,6 +7,7 @@ sync_directories_to_backup:
 smb_sync_directories_to_backup:
   - "Documents"
   - "Pictures"
+  - "Video's"
 sync_user: "{{ config.backup.backup_user.name }}"
 sync_group: "{{ config.backup.backup_user.group | default(config.backup.backup_user.name) }}" 
 sync_uid: "{{ config.backup.backup_user.uid }}"
