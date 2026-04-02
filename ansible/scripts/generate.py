@@ -13,7 +13,7 @@ DEFAULT_HOSTS_YML_FILENAME = SCRIPT_DIR + '/../conf/hosts.yml'
 
 def load_config(filename):
     with open(filename, 'r') as yml:
-        return yaml.load(yml)
+        return yaml.safe_load(yml)
 
 
 config = load_config(SCRIPT_DIR + '/../conf/config.yml')
@@ -112,7 +112,7 @@ def generate_group_vars_yml(hostgroups=None, path=None):
         group_vars = defaults.copy()
         try:
             with open(template_path + '/%s.yml' % (group), 'r') as input:
-                group_vars = yaml.load(input)
+                group_vars = yaml.safe_load(input)
         except FileNotFoundError:
             pass
         hosts_file = group_vars.get('hosts_file', dict())
