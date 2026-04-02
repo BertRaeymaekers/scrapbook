@@ -1,0 +1,5 @@
+---
+- hosts: aviary23
+  tasks:
+    - include_role:
+        name: hosts-file
