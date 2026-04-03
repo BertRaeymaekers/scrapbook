@@ -1,0 +1,45 @@
+---
+- debug:
+    msg: "Installing EVOK"
+
+- name: "Adding unipi certificate for apt."
+  when: ansible_os_family == "Debian"
+  become: true
+  copy:
+    src: unipi_next.asc
+    dest: /etc/apt/trusted.gpg.d/unipi_pub.asc
+    owner: root
+    group: root
+
+- name: "Get release name"
+  when: ansible_os_family == "Debian"
+  command: "lsb_release -sc"
+  register: debian_version_output
+
+- name: "If trixie, install evok for bookworm instead"
+  set_fact:
+    debian_version: "{{ 'bookworm' if debian_version_output.stdout == 'trixie' else debian_version_output.stdout }}"
+
+- name: "Adding /etc/apt/sources.list.d/unipi-temp.list"
+  when: ansible_os_family == "Debian"
+  become: true
+  copy:
+    content: "deb https://repo.unipi.technology/debian {{ debian_version }} unipi1-main main\n" 
+    dest: /etc/apt/sources.list.d/unipi-temp.list
+    owner: root
+    group: root
+
+- name: "Install evok and evok-web."
+  when: ansible_os_family == "Debian"
+  become: true
+  apt:
+    pkg:
+    - evok
+    - evok-web
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+  register: apt_install
+
+- name: "Rebooting to take effect if it needed to install anyting with apt."
+  when: apt_install.changed
+  reboot:

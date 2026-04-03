@@ -3,3 +3,8 @@
   tasks:
     - include_role:
         name: hosts-file
+
+- hosts: evok
+  tasks:
+    - include_role:
+        name: evok
